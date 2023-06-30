@@ -8,11 +8,18 @@ namespace RubiusUI
         {
 			var builder = WebApplication.CreateBuilder(args);
 			builder.Services.AddControllersWithViews();
+            builder.Services.AddSwaggerGen();
 
-			var app = builder.Build();
+            var app = builder.Build();
 
-			// добавляем поддержку контроллеров, которые располагаются в области
-			app.MapControllerRoute(
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            // добавляем поддержку контроллеров, которые располагаются в области
+            app.MapControllerRoute(
 				name: "Account",
 				pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
