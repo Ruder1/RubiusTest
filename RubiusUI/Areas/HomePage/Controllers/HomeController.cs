@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace RubiusUI.Controllers
+namespace RubiusUI.Areas.HomePage.Controllers
 {
 	public class HomeController : Controller
 	{
-		[Route("Home/Index")]
+		[Area("HomePage")]
 		public IActionResult Index()
 		{
 			return View();
