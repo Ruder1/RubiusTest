@@ -2,9 +2,14 @@
 
 namespace RubiusUI.Areas.HomePage.Controllers
 {
-	public class HomeController : Controller
+    
+    [ApiController]
+    [Area("HomePage")]
+    public class HomeController : Controller
 	{
-		[Area("HomePage")]
+
+		[HttpGet]
+		[Route("{area?}/Home")]
 		public IActionResult Index()
 		{
 			return View();
