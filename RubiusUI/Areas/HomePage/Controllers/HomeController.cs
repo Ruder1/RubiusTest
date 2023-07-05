@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using Infrastructure;
+using System.Data;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace RubiusUI.Areas.HomePage.Controllers
 {
@@ -18,7 +21,6 @@ namespace RubiusUI.Areas.HomePage.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-		[Route("Index")]
 		public IActionResult Index()
 		{
 			return View();
@@ -30,5 +32,13 @@ namespace RubiusUI.Areas.HomePage.Controllers
             string check = $"Proverka {number}";
             return check;
         }
+
+        [HttpGet]
+        public IActionResult GetConnection()
+        {
+            var check = Connection.GetConnection();
+            return Ok();
+        }
+
 	}
 }

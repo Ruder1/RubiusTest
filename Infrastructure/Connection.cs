@@ -12,11 +12,7 @@ namespace Infrastructure
 {
     public class Connection
     {
-        private static string connString = "Data Source=(DESCRIPTION=" +
-            "(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=host id)" +
-            "(PORT=specified port number)))(CONNECT_DATA=(SERVER=DEDICATED)" +
-            "(SERVICE_NAME=service name)));" +
-            "User Id = user Id; Password = your password; ";
+        private static string connString = $"Data Source=centr;User ID=hcs;Password=PKJQflvby-16; Persist Security Info=true";
 
         public static IDbConnection GetConnection()
         {
@@ -26,6 +22,14 @@ namespace Infrastructure
                 conn.Open();
             }
             return conn;
+        }
+
+        public static void CloseConnection(IDbConnection conn)
+        {
+            if (conn.State == ConnectionState.Open || conn.State == ConnectionState.Broken)
+            {
+                conn.Close();
+            }
         }
     }
 }
