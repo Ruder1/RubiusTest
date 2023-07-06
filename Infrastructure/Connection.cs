@@ -12,7 +12,7 @@ namespace Infrastructure
 {
     public class Connection
     {
-        private static string connString = $"Data Source=centr;User ID=hcs;Password=PKJQflvby-16; Persist Security Info=true";
+        private static string connString = $"Data Source=nept;User ID=nept_pdo;Password=nept_pdo; Persist Security Info=true";
 
         public static IDbConnection GetConnection()
         {

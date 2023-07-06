@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using Infrastructure;
 using System.Data;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Serilog;
+using RubiusUI.Services.Logging;
 
 namespace RubiusUI.Areas.HomePage.Controllers
 {
@@ -16,6 +18,7 @@ namespace RubiusUI.Areas.HomePage.Controllers
     [Produces("application/json")]
     public class HomeController : Controller
 	{
+        private readonly Logger _logger = new Logger();
         /// <summary>
         /// Выводит страницу Index
         /// </summary>
@@ -25,19 +28,21 @@ namespace RubiusUI.Areas.HomePage.Controllers
 		{
 			return View();
 		}
-
+        
+        
         [HttpGet]
         public ActionResult<string> Check(int? number)
-        {
+        {            
             string check = $"Proverka {number}";
             return check;
         }
 
         [HttpGet]
-        public IActionResult GetConnection()
+        public IDbConnection GetConnection()
         {
+            _logger.InfoLogg();
             var check = Connection.GetConnection();
-            return Ok();
+            return check;
         }
 
 	}
