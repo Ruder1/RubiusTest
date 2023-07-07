@@ -5,6 +5,7 @@ using System.Data;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Serilog;
 using RubiusUI.Services.Logging;
+using Serilog.Events;
 
 namespace RubiusUI.Areas.HomePage.Controllers
 {
@@ -18,7 +19,15 @@ namespace RubiusUI.Areas.HomePage.Controllers
     [Produces("application/json")]
     public class HomeController : Controller
 	{
-        private readonly Logger _logger = new Logger();
+        private readonly ILogger<HomeController> _logger;
+
+        public HomeController(ILogger<HomeController> logger)
+        {
+            _logger = logger;
+        }
+
+        //private readonly Logger _logger = new Logger();
+
         /// <summary>
         /// Выводит страницу Index
         /// </summary>
@@ -32,7 +41,8 @@ namespace RubiusUI.Areas.HomePage.Controllers
         
         [HttpGet]
         public ActionResult<string> Check(int? number)
-        {            
+        {
+            _logger.LogInformation("Info {number}", number);
             string check = $"Proverka {number}";
             return check;
         }
@@ -40,7 +50,7 @@ namespace RubiusUI.Areas.HomePage.Controllers
         [HttpGet]
         public IDbConnection GetConnection()
         {
-            _logger.InfoLogg();
+            
             var check = Connection.GetConnection();
             return check;
         }
