@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using Serilog.Configuration;
+using Serilog;
+using Serilog.Formatting;
+using RubiusUI.Services.Logging;
 
 namespace RubiusUI
 {
@@ -21,6 +25,8 @@ namespace RubiusUI
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
+
+            builder.Logging.AddSerilog(new LoggerConfig().Logger());
 
             var app = builder.Build();
 
