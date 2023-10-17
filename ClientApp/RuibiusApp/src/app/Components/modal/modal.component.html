@@ -1,0 +1,107 @@
+<div class="ClosingArea" (click)="modalService.close()"></div>
+
+<div class="CreateMenu align-middle">
+  <div class="Row m-2">
+    <span class="InfoText input-group-text" id="Surname">Фамилия</span>
+    <input
+      class="CustomInput form-control ms-4"
+      type="text"
+      [(ngModel)]="tempUser.Surname"
+      placeholder="Фамилия"
+    />
+  </div>
+  <div class="Row m-2">
+    <span class="InfoText input-group-text" id="Name">Имя</span>
+    <input
+      class="CustomInput form-control ms-4"
+      type="text"
+      name="Name"
+      [(ngModel)]="tempUser.Name"
+      placeholder="Имя"
+    />
+  </div>
+  <div class="Row m-2">
+    <span class="InfoText input-group-text" id="LastName">Отчество</span>
+    <input
+      class="CustomInput form-control ms-4"
+      name="LastName"
+      [(ngModel)]="tempUser.LastName"
+      type="text"
+      placeholder="Отчество"
+    />
+  </div>
+  <div class="Row m-2">
+    <span class="InfoText input-group-text" id="Email">Email</span>
+    <input
+      class="CustomInput form-control ms-4"
+      type="email"
+      name="Email"
+      [(ngModel)]="tempUser.Email"
+      placeholder="example@mail.com"
+    />
+  </div>
+  <div class="Row m-2">
+    <span class="InfoText input-group-text" id="Salary">Оклад</span>
+    <input
+      class="CustomInput form-control ms-4"
+      type="number"
+      name="Salary"
+      [(ngModel)]="tempUser.Salary"
+      placeholder="0"
+    />
+  </div>
+  <div class="Row m-2">
+    <span class="InfoText input-group-text" id="Divisions">Отделы</span>
+    <ng-select
+      class="ModalSelect ps-4"
+      [items]="division"
+      bindLabel="name"
+      [selectableGroup]="true"
+      [closeOnSelect]="false"
+      [multiple]="true"
+      [(ngModel)]="tempUser.Divisions"
+      groupBy="subdivision"
+      name="selectedDivision"
+    >
+      <ng-template
+        ng-optgroup-tmp
+        let-item="item"
+        let-item$="item$"
+        let-index="index"
+      >
+        <input
+          id="item-{{ index }}"
+          type="checkbox"
+          [ngModel]="item$.selected"
+          name="first"
+        />
+        {{ item.subdivision | uppercase }}
+      </ng-template>
+      <ng-template
+        ng-option-tmp
+        let-item="item"
+        let-item$="item$"
+        let-index="index"
+      >
+        <input
+          id="item-{{ index }}"
+          type="checkbox"
+          [ngModel]="item$.selected"
+          name="second"          
+        />
+        {{ item.name }}
+      </ng-template>
+    </ng-select>
+  </div>
+  <div class="Row mx-auto p-2">
+    <button type="button" class="btn btn-primary btn-outline-dark"
+    (click)="Add()"
+    (click)="modalService.close()">
+      Сохранить
+    </button>
+    <button type="button " class="btn btn-primary btn-outline-dark ms-4"
+    (click)="modalService.close()">
+      Отменить
+    </button>
+  </div>
+</div>
