@@ -8,8 +8,6 @@ namespace DataAccessLayer.Interfaces
 
         IRepository<Division> Divisions { get; }
 
-        IPagination<User> Pagination { get; }
-
         void Save();
     }
 }
