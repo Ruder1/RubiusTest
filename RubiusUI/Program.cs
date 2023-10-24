@@ -5,6 +5,14 @@ using Serilog.Configuration;
 using Serilog;
 using Serilog.Formatting;
 using RubiusUI.Services.Logging;
+using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repository;
+using BuisnessLogicLayer.Services;
+using BuisnessLogicLayer.Interfaces;
+using DataAccessLayer.Entities;
+using DataAccessLayer.EF;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace RubiusUI
 {
@@ -27,6 +35,15 @@ namespace RubiusUI
             });
 
             builder.Logging.AddSerilog(new LoggerConfig().Logger());
+
+            builder.Services.AddTransient<IUserService, UserService>();
+            builder.Services.AddTransient<IUnitOfWork, EFUnitOfWork>();
+            builder.Services.AddTransient<IRepository<User>,UserRepository>();
+
+            var connection = builder.Configuration.GetConnectionString("RubiusTest");
+            builder.Services.AddDbContext<UserContext>
+            (options =>
+            options.UseNpgsql(connection, b => b.MigrationsAssembly("DataAccessLayer")));
 
             var app = builder.Build();
 
