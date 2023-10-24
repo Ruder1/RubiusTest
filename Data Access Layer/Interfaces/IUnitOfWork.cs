@@ -1,10 +1,4 @@
 ﻿using DataAccessLayer.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces
 {
@@ -13,6 +7,8 @@ namespace DataAccessLayer.Interfaces
         IRepository<User> Users { get; }
 
         IRepository<Division> Divisions { get; }
+
+        IPagination<User> Pagination { get; }
 
         void Save();
     }

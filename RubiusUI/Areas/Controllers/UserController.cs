@@ -1,12 +1,8 @@
 ﻿using BuisnessLogicLayer.DTO;
 using BuisnessLogicLayer.Interfaces;
-using DataAccessLayer.EF;
 using Microsoft.AspNetCore.Mvc;
 using RubiusUI.Areas.Model;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using AutoMapper;
-using DataAccessLayer.Entities;
 
 namespace RubiusUI.Areas.Controllers
 {
@@ -18,10 +14,13 @@ namespace RubiusUI.Areas.Controllers
 
         private readonly IFilterService _filterService;
 
-        public UserController(IUserService userService, IFilterService filterService)
+        private readonly IPaginationService _pagination;
+
+        public UserController(IUserService userService, IFilterService filterService, IPaginationService pagination)
         {
             _userService = userService;
             _filterService = filterService;
+            _pagination = pagination;
         }
 
         [HttpGet]
@@ -98,6 +97,25 @@ namespace RubiusUI.Areas.Controllers
             var dataDTO = mapper.Map<FilteredDataViewModel, FiltredDataDTO>(filtredData);
 
             var result = _filterService.FilterData(dataDTO);
+
+            return Ok(result);
+        }
+
+        [HttpGet ("{page}/{pageSize}")]
+        public IActionResult Pagination(int page, int pageSize)
+        {
+
+            var mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<UserPageDTO, UserPageViewModel>();
+                cfg.CreateMap<PagesDTO, PageViewModel>();
+                cfg.CreateMap<UserDTO, UserViewModel>();
+            })
+                .CreateMapper();
+
+            var temp = _pagination.GetPage(page, pageSize);
+
+            var result = mapper.Map<UserPageDTO, UserPageViewModel>(temp);
 
             return Ok(result);
         }

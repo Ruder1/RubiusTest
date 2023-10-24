@@ -38,10 +38,12 @@ namespace RubiusUI
 
             builder.Services.AddTransient<IUserService, UserService>();            
             builder.Services.AddTransient<IFilterService, FilterService>();
+            builder.Services.AddTransient<IPaginationService, PaginationService>();
 
             builder.Services.AddTransient<IUnitOfWork, EFUnitOfWork>();
             builder.Services.AddTransient<IRepository<User>,UserRepository>();
             builder.Services.AddTransient<IRepository<Division>,DivisionRepository>();
+            builder.Services.AddTransient<IPagination<User>, Pagination>();
 
             var connection = builder.Configuration.GetConnectionString("RubiusTest");
             builder.Services.AddDbContext<UserContext>
