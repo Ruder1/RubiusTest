@@ -42,6 +42,7 @@ namespace RubiusUI
 
             app.MapControllers();
 
+
             app.Run();
 		}
     }
