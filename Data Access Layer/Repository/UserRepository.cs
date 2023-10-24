@@ -22,31 +22,50 @@ namespace DataAccessLayer.Repository
 
         public IEnumerable<User> GetAll()
         {
-            //var users = _context.Users.Include(division => division.Divisions).ToList();
-            var temp = _context.Users.Include(d => d.Division).ThenInclude(p => p.Division).ToList();
-            return temp;
+            return _context.Users.Include(division => division.Divisions).ToList();
         }
 
         public User Get(int id)
         {
-            return _context.Users.Include(d => d.Division).ThenInclude(p => p.Division).First(u=>u.Id==id);
+            return _context.Users.Include(d => d.Divisions).FirstOrDefault(u => u.Id == id);
         }
 
         public void Create(User user)
         {
+            var division = new List<Division>();
+
+
+            foreach (var item in user.Divisions)
+            {
+                division.Add(_context.Divisions.FirstOrDefault(d => d.Id == item.Id));
+                
+            }
+            user.Divisions.Clear();
+
+            _context.Divisions.AttachRange(division);
+            user.Divisions.AddRange(division);
+
             _context.Users.Add(user);
         }
 
         public void Update(User user)
         {
-            //_context.Update(user);
-            _context.Entry(user).State = EntityState.Modified;
+            var temp = _context.Enrollments.Where(d => d.UserId == user.Id).ToList();
+            foreach (var item in temp)
+            {
+                _context.Remove(item);
+            }
+            _context.SaveChanges();
+            _context.Update(user);
         }
 
         public IEnumerable<User> Find(Func<User, Boolean> predicate)
         {
-            return _context.Users.Where(predicate).ToList();
+            IQueryable<User> user = _context.Users.Include(d => d.Divisions);
+            return user.Where(predicate);
         }
+
+        
 
         public void Delete(User user)
         {

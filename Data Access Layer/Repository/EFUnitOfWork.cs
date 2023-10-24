@@ -15,6 +15,7 @@ namespace DataAccessLayer.Repository
     {
         private UserContext db;
         private UserRepository userRepository;
+        private DivisionRepository divisionRepository;
 
         public EFUnitOfWork(DbContextOptions<UserContext> connectionString)
         {
@@ -28,6 +29,16 @@ namespace DataAccessLayer.Repository
                 if (userRepository == null)
                     userRepository = new UserRepository(db);
                 return userRepository;
+            }
+        }
+
+        public IRepository<Division> Divisions
+        {
+            get
+            {
+                if (divisionRepository == null)
+                    divisionRepository = new DivisionRepository(db);
+                return divisionRepository;
             }
         }
 

@@ -13,16 +13,11 @@ namespace DataAccessLayer.EF
 
         public DbSet<Division> Divisions { get; set; } = null!;
 
-        public DbSet<UserDivision> UsersDivisions { get; set; }
+        public DbSet<Enrollment> Enrollments { get; set; } = null!;
 
         public UserContext(DbContextOptions<UserContext> options)
             : base(options)
         {}
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseNpgsql("Data Source=helloapp.db");
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,29 +40,13 @@ namespace DataAccessLayer.EF
                 new User { Id = 6, Surname = "Кочерга", Name = "Иван", LastName = "Борисович", Email = "Kocherga@example.com", Salary = 120}
             };
 
-            var listCommonDivisions = new List<UserDivision>()
-            {
-                new UserDivision{UserDivisionID = 1, UserID = 1, DivisionID = 2},
-                new UserDivision{UserDivisionID = 2, UserID = 2, DivisionID = 2},
-                new UserDivision{UserDivisionID = 3, UserID = 3, DivisionID = 2},
-                new UserDivision{UserDivisionID = 4, UserID = 4, DivisionID = 2},
-                new UserDivision{UserDivisionID = 5, UserID = 5, DivisionID = 2},
-                new UserDivision{UserDivisionID = 6, UserID = 6, DivisionID = 1},
-                 new UserDivision{UserDivisionID = 7, UserID = 1, DivisionID = 4},
-                  new UserDivision{UserDivisionID = 8, UserID = 1, DivisionID = 3},
-                   new UserDivision{UserDivisionID = 9, UserID = 1, DivisionID = 1},
-            };
-
             modelBuilder.Entity<User>().HasData(listUser);
             modelBuilder.Entity<Division>().HasData(listDivision);
-            modelBuilder.Entity<UserDivision>().HasData(listCommonDivisions);
 
             modelBuilder.Entity<User>()
                 .HasMany(d => d.Divisions)
                 .WithMany(u => u.Users)
-                .UsingEntity(j => j.ToTable("Enrollments"));
+                .UsingEntity<Enrollment>();
         }
-
-
     }
 }

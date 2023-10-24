@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using RubiusUI.Areas.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using AutoMapper;
+using DataAccessLayer.Entities;
 
-namespace RubiusUI.Areas.Users
+namespace RubiusUI.Areas.Controllers
 {
     [Route("api/v1/[controller]/[action]")]
     [ApiController]
@@ -14,9 +16,12 @@ namespace RubiusUI.Areas.Users
     {
         private readonly IUserService _userService;
 
-        public UserController(IUserService userService)
+        private readonly IFilterService _filterService;
+
+        public UserController(IUserService userService, IFilterService filterService)
         {
             _userService = userService;
+            _filterService = filterService;
         }
 
         [HttpGet]
@@ -57,6 +62,7 @@ namespace RubiusUI.Areas.Users
         {
             var userDto = new UserDTO
             {
+                Id = user.Id,
                 Surname = user.Surname,
                 Name = user.Name,
                 LastName = user.LastName,
@@ -74,6 +80,26 @@ namespace RubiusUI.Areas.Users
             _userService.DeleteUser(id);
 
             return Ok("Пользователь удален");
+        }
+
+        [HttpPost]
+        public IActionResult FiltredUsers(FilteredDataViewModel filtredData)
+        {
+            if (filtredData == null)
+            {
+                return BadRequest("Data is null");
+            }
+
+            var mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<FilteredDataViewModel, FiltredDataDTO>();
+            })
+                .CreateMapper();
+            var dataDTO = mapper.Map<FilteredDataViewModel, FiltredDataDTO>(filtredData);
+
+            var result = _filterService.FilterData(dataDTO);
+
+            return Ok(result);
         }
     }
 }

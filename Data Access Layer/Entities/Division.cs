@@ -23,8 +23,8 @@ namespace DataAccessLayer.Entities
         /// </summary>
         public string Name { get; init; }
 
-        public ICollection<User> Users { get; init; }
+        public ICollection<User> Users { get; init; } = new List<User>();
 
-        public List<UserDivision> User { get; init; }
+        public ICollection<Enrollment> Enrollments { get; init; } = new List<Enrollment>();
     }
 }

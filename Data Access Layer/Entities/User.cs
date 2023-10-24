@@ -37,8 +37,8 @@
         /// </summary>
         /// 
 
-        public ICollection<Division> Divisions { get; init; }
+        public List<Division> Divisions { get; init; } = new List<Division>();
 
-        public List<UserDivision> Division { get; init; }
+        public ICollection<Enrollment> Enrollments { get; init; } = new List<Enrollment>();
     }
 }

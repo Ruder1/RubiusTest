@@ -4,11 +4,7 @@ using BuisnessLogicLayer.Infrastructure;
 using BuisnessLogicLayer.Interfaces;
 using DataAccessLayer.Entities;
 using DataAccessLayer.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace BuisnessLogicLayer.Services
 {
@@ -20,35 +16,19 @@ namespace BuisnessLogicLayer.Services
         {
             Database = uow;
         }
-        public void CreateUser(UserDTO userDto)
-        {
-            // валидация
-            if (userDto == null)
-                throw new ValidationException("Пользователь не найден", "");
-
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<UserDTO, User>()).CreateMapper();
-            var user = mapper.Map<UserDTO, User>(userDto);
-
-            Database.Users.Create(user);
-            Database.Save();
-        }
 
         public IEnumerable<UserDTO> GetUsers()
         {
             var userDB = Database.Users.GetAll().ToList();
             // применяем автомаппер для проекции одной коллекции на другую
 
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<User, UserDTO>()).CreateMapper();
-            var user = mapper.Map<IEnumerable<User>, List<UserDTO>>(userDB);
-            mapper = new MapperConfiguration(cfg => cfg.CreateMap<Division, DivisionDTO>()).CreateMapper();
-
-            for (var i = 0; i < userDB.Count; i++)
+            var mapper = new MapperConfiguration(cfg =>
             {
-                foreach (var item in userDB[i].Division)
-                {
-                    user[i].Divisions.Add(mapper.Map<Division, DivisionDTO>(item.Division));
-                }
-            }
+                cfg.CreateMap<User, UserDTO>();
+                cfg.CreateMap<Division, DivisionDTO>();
+            })
+                .CreateMapper();
+            var user = mapper.Map<List<User>, List<UserDTO>>(userDB);
             return user;
         }
 
@@ -60,30 +40,50 @@ namespace BuisnessLogicLayer.Services
             if (user == null)
                 throw new ValidationException("Пользователь не найден", "");
 
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<User, UserDTO>()).CreateMapper();
-            var userResult = mapper.Map<User, UserDTO>(user);
-
-            mapper = new MapperConfiguration(cfg => cfg.CreateMap<Division, DivisionDTO>()).CreateMapper();
-
-            foreach (var item in user.Division)
+            var mapper = new MapperConfiguration(cfg =>
             {
-                userResult.Divisions.Add(mapper.Map<Division, DivisionDTO>(item.Division));
-            }
+                cfg.CreateMap<User, UserDTO>();
+                cfg.CreateMap<Division, DivisionDTO>();
+            })
+                .CreateMapper();
 
-
+            var userResult = mapper.Map<User, UserDTO>(user);
             return userResult;
+        }
+
+        public void CreateUser(UserDTO userDto)
+        {
+            // валидация
+            if (userDto == null)
+                throw new ValidationException("Пользователь не найден", "");
+
+            var mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<UserDTO, User>();
+                cfg.CreateMap<DivisionDTO, Division>();
+            })
+                .CreateMapper();
+            var user = mapper.Map<UserDTO, User>(userDto);
+
+            Database.Users.Create(user);
+            Database.Save();
         }
 
         public void UpdateUser(UserDTO userDto)
         {
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<UserDTO, User>()).CreateMapper();
+            var mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<UserDTO, User>();
+                cfg.CreateMap<DivisionDTO, Division>();
+            })
+                .CreateMapper();
             var user = mapper.Map<UserDTO, User>(userDto);
 
             Database.Users.Update(user);
             Database.Save();
         }
 
-       
+
 
         public void DeleteUser(int id)
         {
@@ -94,6 +94,7 @@ namespace BuisnessLogicLayer.Services
                 Database.Save();
             }
         }
+
         public void Dispose()
         {
             Database.Dispose();
