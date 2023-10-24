@@ -15,20 +15,11 @@ namespace BuisnessLogicLayer.Services
             Database = uow;
         }
 
-        public UserPageDTO GetPage(int page, int pageSize)
+        public UserPageDTO GetPage(IEnumerable<UserDTO> userList, int page, int pageSize)
         {
-            var source = Database.Pagination.GetPage(page, pageSize);
 
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<User, UserDTO>();
-                cfg.CreateMap<Division, DivisionDTO>();
-            })
-                .CreateMapper();
-            var user = mapper.Map<List<User>, List<UserDTO>>(source.ToList());
-
-            var count = user.Count();
-            var items = user.Skip((page - 1) * pageSize).Take(pageSize);
+            var count = userList.Count();
+            var items = userList.Skip((page - 1) * pageSize).Take(pageSize);
 
             PagesDTO pageDTO = new PagesDTO(count, page, pageSize);
             UserPageDTO userPage = new UserPageDTO(items, pageDTO);

@@ -43,7 +43,6 @@ namespace RubiusUI
             builder.Services.AddTransient<IUnitOfWork, EFUnitOfWork>();
             builder.Services.AddTransient<IRepository<User>,UserRepository>();
             builder.Services.AddTransient<IRepository<Division>,DivisionRepository>();
-            builder.Services.AddTransient<IPagination<User>, Pagination>();
 
             var connection = builder.Configuration.GetConnectionString("RubiusTest");
             builder.Services.AddDbContext<UserContext>

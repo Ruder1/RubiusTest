@@ -4,6 +4,6 @@ namespace BuisnessLogicLayer.Interfaces
 {
     public interface IPaginationService:IDisposable
     {
-        public UserPageDTO GetPage(int page, int pageSize);
+        public UserPageDTO GetPage(IEnumerable<UserDTO> userList, int page, int pageSize);
     }
 }
