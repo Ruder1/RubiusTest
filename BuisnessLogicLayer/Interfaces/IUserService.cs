@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 namespace BuisnessLogicLayer.Interfaces
 {
     public interface IUserService :IDisposable
-    {
-        public void CreateUser(UserDTO userDto);
-
+    {      
         public UserDTO GetUser(int? id);
 
         public IEnumerable<UserDTO> GetUsers();
+
+        public void CreateUser(UserDTO userDto);
 
         public void UpdateUser(UserDTO userDto);
 

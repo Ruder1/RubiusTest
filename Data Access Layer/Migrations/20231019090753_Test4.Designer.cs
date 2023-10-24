@@ -2,6 +2,7 @@
 using DataAccessLayer.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(UserContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    [Migration("20231019090753_Test4")]
+    partial class Test4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,21 +75,6 @@ namespace DataAccessLayer.Migrations
                             Name = "Кадров",
                             Subdivision = "Финансовый"
                         });
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Entities.Enrollment", b =>
-                {
-                    b.Property<int>("DivisionId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("DivisionId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Entities.User", b =>
@@ -177,29 +165,142 @@ namespace DataAccessLayer.Migrations
                         });
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.Enrollment", b =>
+            modelBuilder.Entity("DataAccessLayer.Entities.UserDivision", b =>
+                {
+                    b.Property<int>("UserDivisionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserDivisionID"));
+
+                    b.Property<int>("DivisionID")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserDivisionID");
+
+                    b.HasIndex("DivisionID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("UsersDivisions");
+
+                    b.HasData(
+                        new
+                        {
+                            UserDivisionID = 1,
+                            DivisionID = 2,
+                            UserID = 1
+                        },
+                        new
+                        {
+                            UserDivisionID = 2,
+                            DivisionID = 2,
+                            UserID = 2
+                        },
+                        new
+                        {
+                            UserDivisionID = 3,
+                            DivisionID = 2,
+                            UserID = 3
+                        },
+                        new
+                        {
+                            UserDivisionID = 4,
+                            DivisionID = 2,
+                            UserID = 4
+                        },
+                        new
+                        {
+                            UserDivisionID = 5,
+                            DivisionID = 2,
+                            UserID = 5
+                        },
+                        new
+                        {
+                            UserDivisionID = 6,
+                            DivisionID = 1,
+                            UserID = 6
+                        },
+                        new
+                        {
+                            UserDivisionID = 7,
+                            DivisionID = 4,
+                            UserID = 1
+                        },
+                        new
+                        {
+                            UserDivisionID = 8,
+                            DivisionID = 3,
+                            UserID = 1
+                        },
+                        new
+                        {
+                            UserDivisionID = 9,
+                            DivisionID = 1,
+                            UserID = 1
+                        });
+                });
+
+            modelBuilder.Entity("DivisionUser", b =>
+                {
+                    b.Property<int>("DivisionsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("DivisionsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("Enrollments", (string)null);
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Entities.UserDivision", b =>
+                {
+                    b.HasOne("DataAccessLayer.Entities.Division", "Division")
+                        .WithMany("User")
+                        .HasForeignKey("DivisionID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccessLayer.Entities.User", "User")
+                        .WithMany("Division")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Division");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DivisionUser", b =>
                 {
                     b.HasOne("DataAccessLayer.Entities.Division", null)
-                        .WithMany("Enrollments")
-                        .HasForeignKey("DivisionId")
+                        .WithMany()
+                        .HasForeignKey("DivisionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DataAccessLayer.Entities.User", null)
-                        .WithMany("Enrollments")
-                        .HasForeignKey("UserId")
+                        .WithMany()
+                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("DataAccessLayer.Entities.Division", b =>
                 {
-                    b.Navigation("Enrollments");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Entities.User", b =>
                 {
-                    b.Navigation("Enrollments");
+                    b.Navigation("Division");
                 });
 #pragma warning restore 612, 618
         }

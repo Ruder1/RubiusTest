@@ -36,9 +36,12 @@ namespace RubiusUI
 
             builder.Logging.AddSerilog(new LoggerConfig().Logger());
 
-            builder.Services.AddTransient<IUserService, UserService>();
+            builder.Services.AddTransient<IUserService, UserService>();            
+            builder.Services.AddTransient<IFilterService, FilterService>();
+
             builder.Services.AddTransient<IUnitOfWork, EFUnitOfWork>();
             builder.Services.AddTransient<IRepository<User>,UserRepository>();
+            builder.Services.AddTransient<IRepository<Division>,DivisionRepository>();
 
             var connection = builder.Configuration.GetConnectionString("RubiusTest");
             builder.Services.AddDbContext<UserContext>
