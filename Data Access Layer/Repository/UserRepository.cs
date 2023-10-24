@@ -13,43 +13,45 @@ namespace DataAccessLayer.Repository
 {
     public class UserRepository : IRepository<User>
     {
-        private UserContext db;
+        private readonly UserContext _context;
 
         public UserRepository(UserContext context)
         {
-            this.db = context;
+            _context = context;
         }
 
         public IEnumerable<User> GetAll()
         {
-            return db.Users;
+            //var users = _context.Users.Include(division => division.Divisions).ToList();
+            var temp = _context.Users.Include(d => d.Division).ThenInclude(p => p.Division).ToList();
+            return temp;
         }
 
         public User Get(int id)
         {
-            return db.Users.Find(id);
+            return _context.Users.Include(d => d.Division).ThenInclude(p => p.Division).First(u=>u.Id==id);
         }
 
-        public void Create(User book)
+        public void Create(User user)
         {
-            db.Users.Add(book);
+            _context.Users.Add(user);
         }
 
-        public void Update(User book)
+        public void Update(User user)
         {
-            db.Entry(book).State = EntityState.Modified;
+            //_context.Update(user);
+            _context.Entry(user).State = EntityState.Modified;
         }
 
         public IEnumerable<User> Find(Func<User, Boolean> predicate)
         {
-            return db.Users.Where(predicate).ToList();
+            return _context.Users.Where(predicate).ToList();
         }
 
-        public void Delete(int id)
+        public void Delete(User user)
         {
-            User book = db.Users.Find(id);
-            if (book != null)
-                db.Users.Remove(book);
+            if (user != null)
+                _context.Users.Remove(user);
         }
     }
 }

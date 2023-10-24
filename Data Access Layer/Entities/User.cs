@@ -35,8 +35,10 @@
         /// <summary>
         /// Подразделения
         /// </summary>
-        public ICollection<Division> Divisions { get; set; }
+        /// 
 
-        public int DivisionId { get; set; }
+        public ICollection<Division> Divisions { get; init; }
+
+        public List<UserDivision> Division { get; init; }
     }
 }
