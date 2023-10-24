@@ -2,12 +2,6 @@
 using DataAccessLayer.Entities;
 using DataAccessLayer.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repository
 {
@@ -16,6 +10,7 @@ namespace DataAccessLayer.Repository
         private UserContext db;
         private UserRepository userRepository;
         private DivisionRepository divisionRepository;
+        private Pagination pagination;
 
         public EFUnitOfWork(DbContextOptions<UserContext> connectionString)
         {
@@ -39,6 +34,16 @@ namespace DataAccessLayer.Repository
                 if (divisionRepository == null)
                     divisionRepository = new DivisionRepository(db);
                 return divisionRepository;
+            }
+        }
+
+        public IPagination<User> Pagination
+        {
+            get
+            {
+                if (pagination == null)
+                    pagination = new Pagination(db);
+                return pagination;
             }
         }
 
