@@ -7,7 +7,7 @@ export class User implements IUser
     lastName:string;
     email:string;
     salary:number;
-    divisions:Divisions[];
+    divisions:IDivisions[];
 }
 
 export class UserPage implements IUserPage
@@ -25,11 +25,12 @@ export class Page implements IPage
 }
 
 
-export interface Divisions
+export interface IDivisions
 {
   id:number;
-  subdivision:string;
   name:string;
+  parent:IDivisions;
+  children:IDivisions[];
 }
 
 export interface IUser
@@ -40,7 +41,7 @@ export interface IUser
   lastName:string;
   email:string;
   salary:number;
-  divisions:Divisions[];
+  divisions:IDivisions[];
 }
 
 export interface IUserPage

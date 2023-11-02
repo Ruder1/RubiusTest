@@ -77,7 +77,7 @@ namespace RubiusUI
                 app.UseSwaggerUI(options =>
                 {
                     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-                    options.RoutePrefix = "swagger";
+                    options.RoutePrefix = string.Empty;
                 });
             }
 

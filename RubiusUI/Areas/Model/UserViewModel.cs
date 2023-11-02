@@ -10,6 +10,6 @@ namespace RubiusUI.Areas.Model
         public string LastName { get; init; }
         public string Email { get; init; }
         public int Salary { get; init; }
-        public List<DivisionDTO> Divisions { get; init; }
+        public List<DivisionViewModel> Divisions { get; init; }
     }
 }

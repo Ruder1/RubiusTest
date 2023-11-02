@@ -84,7 +84,7 @@ namespace RubiusUI.Areas.Controllers
         }
 
         [HttpPost]
-        public IActionResult FiltredUsers(FilteredDataViewModel filtredData, int page, int pageSize)
+        public IActionResult FiltredUsers(FilteredDataViewModel filtredData, int page = 1, int pageSize = 5)
         {
             if (filtredData == null)
             {
@@ -105,7 +105,10 @@ namespace RubiusUI.Areas.Controllers
         [HttpGet]
         public IActionResult GetDivision()
         {
-            var result = _userService.GetDivision();
+            var divisions = _userService.GetDivision();
+
+            var result = _mapper.Map<IEnumerable<DivisionDTO>, IEnumerable<DivisionViewModel>>(divisions);
+
             return Ok(result);
         }
     }

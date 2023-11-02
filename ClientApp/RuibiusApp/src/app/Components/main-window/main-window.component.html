@@ -26,10 +26,10 @@
     <div class="InfoElement">Отделы</div>
     <ng-select
       class="custom"
-      [items]="division"
+      [items]="divisions"
       [multiple]="true"
       bindLabel="name"
-      [selectableGroup]="true"
+      [selectableGroup]="false"
       [closeOnSelect]="false"
       bindValue="id"
       [(ngModel)]="selectedDivision"
@@ -41,15 +41,16 @@
         let-item="item"
         let-item$="item$"
         let-index="index"
+        
       >
         <input
           id="item-{{ index }}"
           type="checkbox"
           [ngModel]="item$.selected"
         />
-        {{ item.subdivision | uppercase }}
+        {{ item.parent| uppercase }}
       </ng-template>
-      <ng-template
+      <!-- <ng-template
         ng-option-tmp
         let-item="item"
         let-item$="item$"
@@ -61,7 +62,7 @@
           [ngModel]="item$.selected"
         />
         {{ item.name }}
-      </ng-template>
+      </ng-template> -->
     </ng-select>
 
     <div class="InfoElement">Оклад мин / макс</div>

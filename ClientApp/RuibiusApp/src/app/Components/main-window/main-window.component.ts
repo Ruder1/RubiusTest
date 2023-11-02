@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { DataService } from '../../Services/data.service';
 import { ModalService } from 'src/app/Services/modal.service';
-import { Divisions, IPage, IUser, IUserPage, User, UserPage } from 'src/app/models/User.model';
+import { IDivisions, IPage, IUser, IUserPage, User, UserPage } from 'src/app/models/User.model';
 import { isEmpty, map, max } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -26,7 +26,7 @@ export class MainWindowComponent implements OnInit {
   users: IUser[] = [];
   pages:IPage;
   selectedDivision: number[] = [];
-  division: Divisions[] = [];
+  divisions: IDivisions[] = [];
 
   //Переменные для фильтрации
   filteredUserList: IUser[] = [];
@@ -44,10 +44,12 @@ export class MainWindowComponent implements OnInit {
 
   ngOnInit() {
     this.dataService.getDivisions().subscribe((res) => {
-      this.division = res;
+      console.log(res)
+      this.divisions = res;
+      
     });
 
-    this.dataService.getUsersController()
+    this.dataService.getUsersController(1,10)
     .subscribe((data:IUserPage)=>    
       {
         this.userPage = data;
@@ -59,7 +61,9 @@ export class MainWindowComponent implements OnInit {
         //TODO: Измненить сортировку и пагинацию на серверную
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort; 
+        
       })  
+      
   }
 
   //TODO: Добавить отправку на сервер
@@ -105,7 +109,7 @@ export class MainWindowComponent implements OnInit {
 
   filterResults(text: string) {
 
-
+    
     //TODO:Убрать, есть фильтрация через сервер
     if (!text) {
       this.filteredUserList = this.users;
