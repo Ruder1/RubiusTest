@@ -1,4 +1,5 @@
 ﻿using BuisnessLogicLayer.DTO;
+using DataAccessLayer.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace BuisnessLogicLayer.Interfaces
         public void UpdateUser(UserDTO userDto);
 
         public void DeleteUser(int id);
+
+        public IEnumerable<DivisionDTO> GetDivision();
 
     }
 }

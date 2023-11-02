@@ -22,12 +22,17 @@ namespace DataAccessLayer.Repository
 
         public IEnumerable<User> GetAll()
         {
-            return _context.Users.Include(division => division.Divisions).ToList();
+            return _context.Users.Include(division => division.Divisions)
+                .OrderBy(s=>s.Surname)
+                .ThenBy(n=>n.Name)
+                .ThenBy(l=>l.LastName)
+                .ToList();
         }
 
         public User Get(int id)
         {
-            return _context.Users.Include(d => d.Divisions).FirstOrDefault(u => u.Id == id);
+            return _context.Users.Include(d => d.Divisions)
+                .FirstOrDefault(u => u.Id == id);
         }
 
         public void Create(User user)
@@ -64,8 +69,7 @@ namespace DataAccessLayer.Repository
             IQueryable<User> user = _context.Users.Include(d => d.Divisions);
             return user.Where(predicate);
         }
-
-        
+                
 
         public void Delete(User user)
         {

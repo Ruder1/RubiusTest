@@ -3,6 +3,7 @@ using System;
 using DataAccessLayer.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,13 +12,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(UserContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    [Migration("20231025093057_Test6")]
+    partial class Test6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.13")
+                .HasAnnotation("ProductVersion", "7.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -52,14 +55,12 @@ namespace DataAccessLayer.Migrations
                         new
                         {
                             Id = 2,
-                            Name = "Логистики",
-                            ParentId = 1
+                            Name = "Логистики"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Закупок",
-                            ParentId = 1
+                            Name = "Закупок"
                         },
                         new
                         {
@@ -69,8 +70,7 @@ namespace DataAccessLayer.Migrations
                         new
                         {
                             Id = 5,
-                            Name = "Кадров",
-                            ParentId = 1
+                            Name = "Кадров"
                         });
                 });
 
@@ -87,43 +87,6 @@ namespace DataAccessLayer.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Enrollments");
-
-                    b.HasData(
-                        new
-                        {
-                            DivisionId = 1,
-                            UserId = 1
-                        },
-                        new
-                        {
-                            DivisionId = 1,
-                            UserId = 3
-                        },
-                        new
-                        {
-                            DivisionId = 2,
-                            UserId = 1
-                        },
-                        new
-                        {
-                            DivisionId = 3,
-                            UserId = 2
-                        },
-                        new
-                        {
-                            DivisionId = 2,
-                            UserId = 4
-                        },
-                        new
-                        {
-                            DivisionId = 4,
-                            UserId = 5
-                        },
-                        new
-                        {
-                            DivisionId = 5,
-                            UserId = 6
-                        });
                 });
 
             modelBuilder.Entity("DataAccessLayer.Entities.User", b =>

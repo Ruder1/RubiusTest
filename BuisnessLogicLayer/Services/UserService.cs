@@ -12,23 +12,19 @@ namespace BuisnessLogicLayer.Services
     {
         private IUnitOfWork Database { get; set; }
 
-        public UserService(IUnitOfWork uow)
+        private readonly IMapper _mapper;
+
+        public UserService(IUnitOfWork uow, IMapper mapper)
         {
             Database = uow;
+            _mapper = mapper;
         }
 
         public IEnumerable<UserDTO> GetUsers()
         {
             var userDB = Database.Users.GetAll().ToList();
             // применяем автомаппер для проекции одной коллекции на другую
-
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<User, UserDTO>();
-                cfg.CreateMap<Division, DivisionDTO>();
-            })
-                .CreateMapper();
-            var user = mapper.Map<List<User>, List<UserDTO>>(userDB);
+            var user = _mapper.Map<List<User>, List<UserDTO>>(userDB);
             return user;
         }
 
@@ -36,18 +32,13 @@ namespace BuisnessLogicLayer.Services
         {
             if (id == null)
                 throw new ValidationException("Не установлено id Пользователя", "");
+
             var user = Database.Users.Get(id.Value);
+
             if (user == null)
                 throw new ValidationException("Пользователь не найден", "");
 
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<User, UserDTO>();
-                cfg.CreateMap<Division, DivisionDTO>();
-            })
-                .CreateMapper();
-
-            var userResult = mapper.Map<User, UserDTO>(user);
+            var userResult = _mapper.Map<User, UserDTO>(user);
             return userResult;
         }
 
@@ -56,14 +47,8 @@ namespace BuisnessLogicLayer.Services
             // валидация
             if (userDto == null)
                 throw new ValidationException("Пользователь не найден", "");
-
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<UserDTO, User>();
-                cfg.CreateMap<DivisionDTO, Division>();
-            })
-                .CreateMapper();
-            var user = mapper.Map<UserDTO, User>(userDto);
+            
+            var user = _mapper.Map<UserDTO, User>(userDto);
 
             Database.Users.Create(user);
             Database.Save();
@@ -71,19 +56,20 @@ namespace BuisnessLogicLayer.Services
 
         public void UpdateUser(UserDTO userDto)
         {
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<UserDTO, User>();
-                cfg.CreateMap<DivisionDTO, Division>();
-            })
-                .CreateMapper();
-            var user = mapper.Map<UserDTO, User>(userDto);
+            var user = _mapper.Map<UserDTO, User>(userDto);
 
             Database.Users.Update(user);
             Database.Save();
         }
 
+        public IEnumerable<DivisionDTO> GetDivision()
+        {
+            var temp = Database.Divisions.GetAll();
 
+            var result = _mapper.Map<IEnumerable<Division>, IEnumerable<DivisionDTO> >(temp);
+
+            return result;
+        }
 
         public void DeleteUser(int id)
         {
