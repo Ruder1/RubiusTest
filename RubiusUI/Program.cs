@@ -17,6 +17,7 @@ using BuisnessLogicLayer.DTO;
 using RubiusUI.Areas.Model;
 using RubiusUI.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 
 namespace RubiusUI
 {
@@ -27,8 +28,9 @@ namespace RubiusUI
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddControllersWithViews()
                   .AddNewtonsoftJson(options =>
-                  options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-                  ); ;
+                  options.SerializerSettings.ReferenceLoopHandling = 
+                         Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -58,22 +60,46 @@ namespace RubiusUI
             var connection = builder.Configuration.GetConnectionString("RubiusTest");
             builder.Services.AddDbContext<UserContext>
             (options =>
-            options.UseNpgsql(connection, b => b.MigrationsAssembly("DataAccessLayer")));
+                options.UseNpgsql(connection, b => b.MigrationsAssembly("DataAccessLayer")));
+
+            //builder.Services.AddSpaStaticFiles(confg => confg.RootPath = "../ClientApp/RuibiusApp/dist/ruibius-app");
+
+            builder.Services.AddCors();
 
             var app = builder.Build();
 
+            app.UseStaticFiles();
+
             if (app.Environment.IsDevelopment())
             {
+                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(options =>
                 {
                     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-                    options.RoutePrefix = string.Empty;
+                    options.RoutePrefix = "swagger";
                 });
             }
 
             app.MapControllers();
 
+            //app.UseCors("CorsPolicuy");
+           
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+            app.UseHttpsRedirection();
+
+            //app.UseSpa(spa =>
+            //{
+            //    spa.Options.SourcePath = "../ClientApp/RuibiusApp";
+
+            //    if (app.Environment.IsDevelopment())
+            //    {
+            //        spa.UseAngularCliServer(npmScript: "start");
+            //    }
+            //});
 
             app.Run();
         }

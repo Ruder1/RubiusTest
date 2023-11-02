@@ -25,12 +25,12 @@ export class ModalComponent implements OnInit{
     this.division = res;
   })
     //TODO: Исправить копирование элементов (По значение, а не по ссылке)
-    this.tempUser.Surname = this.user.Surname,
-    this.tempUser.Name = this.user.Name
-    this.tempUser.LastName = this.user.LastName
-    this.tempUser.Email = this.user.Email
-    this.tempUser.Salary = this.user.Salary
-    this.tempUser.Divisions = this.user.Divisions
+    this.tempUser.surname = this.user.surname,
+    this.tempUser.name = this.user.name
+    this.tempUser.lastName = this.user.lastName
+    this.tempUser.email = this.user.email
+    this.tempUser.salary = this.user.salary
+    this.tempUser.divisions = this.user.divisions
   }
 
   Add()
@@ -42,6 +42,6 @@ export class ModalComponent implements OnInit{
   ChooseDivision(item:any)
   {
     console.log(item)
-    this.user.Divisions.push(item)
+    this.user.divisions.push(item)
   }
 }

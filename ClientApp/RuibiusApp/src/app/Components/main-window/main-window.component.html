@@ -20,11 +20,6 @@
         #filter
       />
     </form>
-
-    <!-- <mat-form-field>
-      <mat-label>Поиск</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="Иван" #input />
-    </mat-form-field> -->
   </div>
 
   <div class="InfoContainer">
@@ -114,13 +109,13 @@
         <!-- Name Column -->
         <ng-container matColumnDef="email">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>email</th>
-          <td mat-cell *matCellDef="let row">{{ row.Email }}</td>
+          <td mat-cell *matCellDef="let row">{{ row.email }}</td>
         </ng-container>
     
         <!-- Fruit Column -->
         <ng-container matColumnDef="salary">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Salary</th>
-          <td mat-cell *matCellDef="let row">{{ row.Salary }}</td>
+          <td mat-cell *matCellDef="let row">{{ row.salary }}</td>
         </ng-container>
     
         <!-- Control Column -->

@@ -1,25 +1,36 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay, map, tap } from 'rxjs/operators';
-import { Divisions, IUser, User } from '../models/User.model';
+import { Divisions, IUser, IUserPage, User, UserPage } from '../models/User.model';
+import {HttpClient} from '@angular/common/http'
 
-@Injectable({
+@Injectable(
+  {
   providedIn: 'root'
-})
+}
+)
 export class DataService {
 
-  constructor() { }
+  constructor(private http:HttpClient) { }
+
+  // private url = "/api/v1/";
+  private url = "https://localhost:7072/api/v1/User/Users?page=1&pageSize=5";
+
+   getUsersController():Observable<IUserPage>
+  {
+    return this.http.get<IUserPage>(this.url); 
+  }
 
   getDivisions(): Observable<Divisions[]> {
     let items = getMockDivision();
     return of(items).pipe(delay(500));
 }
 
-  getUsers(): Observable<IUser[]>
-  {
-    let items = getMockUsers();
-    return of(items).pipe(delay(500));
-  }
+  // getUsers(): Observable<IUser[]>
+  // {
+  //   let items = getMockUsers();
+  //   return of(items).pipe(delay(500));
+  // }
 
 }
 
