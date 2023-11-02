@@ -17,17 +17,18 @@ namespace DataAccessLayer.EF
 
         public UserContext(DbContextOptions<UserContext> options)
             : base(options)
-        {}
+        { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var listDivision = new List<Division>()
+
+            var listDivision = new List<Division>
             {
-                new Division { Id =1, Name = "Финансовый", Subdivision = "Финансовый" },
-                new Division { Id = 2, Name = "Логистики", Subdivision = "Финансовый" },
-                new Division { Id = 3, Name = "Закупок", Subdivision = "Финансовый" },
-                new Division { Id = 4, Name = "Развлечений", Subdivision = "Развлечений" },
-                new Division { Id = 5, Name = "Кадров", Subdivision = "Финансовый" }
+                new Division { Id = 1, Name = "Финансовый" },
+                new Division { Id = 2, Name = "Логистики", ParentId = 1 },
+                new Division { Id = 3, Name = "Закупок", ParentId = 1 },
+                new Division { Id = 4, Name = "Развлечений" },
+                new Division { Id = 5, Name = "Кадров", ParentId = 1 }
             };
 
             var listUser = new List<User>()
@@ -40,8 +41,32 @@ namespace DataAccessLayer.EF
                 new User { Id = 6, Surname = "Кочерга", Name = "Иван", LastName = "Борисович", Email = "Kocherga@example.com", Salary = 120}
             };
 
+            var listEnrolments = new List<Enrollment>()
+            {
+                new Enrollment {DivisionId = 1, UserId = 1},
+                new Enrollment {DivisionId = 1, UserId = 3},
+                new Enrollment {DivisionId = 2, UserId = 1},
+                new Enrollment {DivisionId = 3, UserId = 2},
+                new Enrollment {DivisionId = 2, UserId = 4},
+                new Enrollment {DivisionId = 4, UserId = 5},
+                new Enrollment {DivisionId = 5, UserId = 6},
+            };
+
             modelBuilder.Entity<User>().HasData(listUser);
-            modelBuilder.Entity<Division>().HasData(listDivision);
+
+            modelBuilder.Entity<Division>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.Name);
+                entity.HasOne(x => x.Parent)
+                    .WithMany(x => x.Children)
+                    .HasForeignKey(x => x.ParentId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasData(listDivision);
+            });
+
+            modelBuilder.Entity<Enrollment>().HasData(listEnrolments);
 
             modelBuilder.Entity<User>()
                 .HasMany(d => d.Divisions)

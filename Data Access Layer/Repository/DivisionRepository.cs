@@ -41,7 +41,7 @@ namespace DataAccessLayer.Repository
 
         public IEnumerable<Division> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Divisions;
         }
 
         public void Update(Division item)

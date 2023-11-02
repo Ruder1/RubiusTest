@@ -16,21 +16,16 @@ namespace BuisnessLogicLayer.Services
 
         private IUnitOfWork Database { get; set; }
 
-        public FilterService(IUnitOfWork uow)
+        private readonly IMapper _mapper;
+
+        public FilterService(IUnitOfWork uow, IMapper mapper)
         {
             Database = uow;
+            _mapper = mapper;
         }
 
-        public IEnumerable<UserDTO> FilterData(FiltredDataDTO data)
+        public IEnumerable<UserDTO> FilterData(FiltredDataDTO? data)
         {
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<User, UserDTO>();
-                cfg.CreateMap<Division, DivisionDTO>();
-                cfg.CreateMap<DivisionDTO, Division>();
-            })
-                .CreateMapper();
-
             IEnumerable<User> users = Database.Users.GetAll();
 
             if (data.Division != null)
@@ -53,7 +48,7 @@ namespace BuisnessLogicLayer.Services
                 || p.Email.Contains(data.SearchString));
             }            
 
-            var userResult = mapper.Map<List<User>, List<UserDTO>>(users.ToList());
+            var userResult = _mapper.Map<List<User>, List<UserDTO>>(users.ToList());
 
             return userResult;
         }

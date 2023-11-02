@@ -13,6 +13,10 @@ using DataAccessLayer.Entities;
 using DataAccessLayer.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using BuisnessLogicLayer.DTO;
+using RubiusUI.Areas.Model;
+using RubiusUI.Services;
+using AutoMapper;
 
 namespace RubiusUI
 {
@@ -20,8 +24,11 @@ namespace RubiusUI
     {
         public static void Main(string[] args)
         {
-			var builder = WebApplication.CreateBuilder(args);
-			builder.Services.AddControllersWithViews();
+            var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddControllersWithViews()
+                  .AddNewtonsoftJson(options =>
+                  options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                  ); ;
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -36,13 +43,17 @@ namespace RubiusUI
 
             builder.Logging.AddSerilog(new LoggerConfig().Logger());
 
-            builder.Services.AddTransient<IUserService, UserService>();            
+            builder.Services.AddTransient<IUserService, UserService>();
             builder.Services.AddTransient<IFilterService, FilterService>();
             builder.Services.AddTransient<IPaginationService, PaginationService>();
 
             builder.Services.AddTransient<IUnitOfWork, EFUnitOfWork>();
-            builder.Services.AddTransient<IRepository<User>,UserRepository>();
-            builder.Services.AddTransient<IRepository<Division>,DivisionRepository>();
+            builder.Services.AddTransient<IRepository<User>, UserRepository>();
+            builder.Services.AddTransient<IRepository<Division>, DivisionRepository>();
+
+            var mapperConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile()));
+            IMapper mapper = mapperConfig.CreateMapper();
+            builder.Services.AddSingleton(mapper);
 
             var connection = builder.Configuration.GetConnectionString("RubiusTest");
             builder.Services.AddDbContext<UserContext>
@@ -65,6 +76,6 @@ namespace RubiusUI
 
 
             app.Run();
-		}
+        }
     }
 }

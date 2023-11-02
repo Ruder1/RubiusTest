@@ -16,32 +16,26 @@ namespace RubiusUI.Areas.Controllers
 
         private readonly IFilterService _filterService;
 
-        private readonly IPaginationService _pagination;
+        private readonly IPaginationService _pageService;
 
-        public UserController(IUserService userService, IFilterService filterService, IPaginationService pagination)
+        private readonly IMapper _mapper;
+
+        public UserController(IUserService userService, IFilterService filterService, IPaginationService pagination, IMapper mapper)
         {
             _userService = userService;
             _filterService = filterService;
-            _pagination = pagination;
+            _pageService = pagination;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult Users(int page, int pageSize)
         {
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<FilteredDataViewModel, FiltredDataDTO>();
-                cfg.CreateMap<UserPageDTO, UserPageViewModel>();
-                cfg.CreateMap<PagesDTO, PageViewModel>();
-                cfg.CreateMap<UserDTO, UserViewModel>();
-            })
-                .CreateMapper();
-
             var userList = _userService.GetUsers().ToList();
 
-            var pagedList = _pagination.GetPage(userList, page, pageSize);
+            var pagedList = _pageService.GetPage(userList, page, pageSize);
 
-            var result = mapper.Map<UserPageDTO, UserPageViewModel>(pagedList);
+            var result = _mapper.Map<UserPageDTO, UserPageViewModel>(pagedList);
 
             return Ok(result);
         }
@@ -49,24 +43,15 @@ namespace RubiusUI.Areas.Controllers
         [HttpGet("{id}")]
         public IActionResult User(int id, int page, int pageSize)
         {
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<FilteredDataViewModel, FiltredDataDTO>();
-                cfg.CreateMap<UserPageDTO, UserPageViewModel>();
-                cfg.CreateMap<PagesDTO, PageViewModel>();
-                cfg.CreateMap<UserDTO, UserViewModel>();
-            })
-                .CreateMapper();
-
             var user = _userService.GetUser(id);
 
             var temp = new List<UserDTO>()
             {
                 user
             };
-            var pagedList = _pagination.GetPage(temp, page, pageSize);
+            var pagedList = _pageService.GetPage(temp, page, pageSize);
 
-            var result = mapper.Map<UserPageDTO, UserPageViewModel>(pagedList);
+            var result = _mapper.Map<UserPageDTO, UserPageViewModel>(pagedList);
 
             return Ok(result);
         }
@@ -74,15 +59,7 @@ namespace RubiusUI.Areas.Controllers
         [HttpPost]
         public IActionResult CreateUser(UserViewModel user)
         {
-            var userDto = new UserDTO
-            {
-                Surname = user.Surname,
-                Name = user.Name,
-                LastName = user.LastName,
-                Email = user.Email,
-                Divisions = user.Divisions,
-                Salary = user.Salary
-            };
+            var userDto = _mapper.Map<UserViewModel, UserDTO>(user);
 
             _userService.CreateUser(userDto);
 
@@ -93,16 +70,7 @@ namespace RubiusUI.Areas.Controllers
         [HttpPut]
         public IActionResult ChangeUser(UserViewModel user)
         {
-            var userDto = new UserDTO
-            {
-                Id = user.Id,
-                Surname = user.Surname,
-                Name = user.Name,
-                LastName = user.LastName,
-                Email = user.Email,
-                Divisions = user.Divisions,
-                Salary = user.Salary
-            };
+            var userDto = _mapper.Map<UserViewModel, UserDTO>(user);
             _userService.UpdateUser(userDto);
             return Ok("Пользователь отредактирован");
         }
@@ -123,22 +91,21 @@ namespace RubiusUI.Areas.Controllers
                 return BadRequest("Data is null");
             }
 
-            var mapper = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<FilteredDataViewModel, FiltredDataDTO>();
-                cfg.CreateMap<UserPageDTO, UserPageViewModel>();
-                cfg.CreateMap<PagesDTO, PageViewModel>();
-                cfg.CreateMap<UserDTO, UserViewModel>();
-            })
-                .CreateMapper();
-            var dataDTO = mapper.Map<FilteredDataViewModel, FiltredDataDTO>(filtredData);
+            var dataDTO = _mapper.Map<FilteredDataViewModel, FiltredDataDTO>(filtredData);
 
             var filteredList = _filterService.FilterData(dataDTO);
 
-            var pagedList = _pagination.GetPage(filteredList, page, pageSize);
+            var pagedList = _pageService.GetPage(filteredList, page, pageSize);
 
-            var result = mapper.Map<UserPageDTO, UserPageViewModel>(pagedList);
+            var result = _mapper.Map<UserPageDTO, UserPageViewModel>(pagedList);
 
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public IActionResult GetDivision()
+        {
+            var result = _userService.GetDivision();
             return Ok(result);
         }
     }

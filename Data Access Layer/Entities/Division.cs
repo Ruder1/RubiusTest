@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,14 +16,15 @@ namespace DataAccessLayer.Entities
         public int Id { get; init; }
 
         /// <summary>
-        /// Подразделение
-        /// </summary>
-        public string Subdivision { get; init; }
-
-        /// <summary>
         /// Название отдела
         /// </summary>
         public string Name { get; init; }
+
+        public int? ParentId { get; init; }
+
+        public Division? Parent { get; init; }
+
+        public List<Division> Children { get; init; } = new List<Division>();
 
         public ICollection<User> Users { get; init; } = new List<User>();
 

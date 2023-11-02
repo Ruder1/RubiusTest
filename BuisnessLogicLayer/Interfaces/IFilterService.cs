@@ -9,6 +9,6 @@ namespace BuisnessLogicLayer.Interfaces
 {
     public interface IFilterService:IDisposable
     {
-        public IEnumerable<UserDTO> FilterData(FiltredDataDTO data);
+        public IEnumerable<UserDTO> FilterData(FiltredDataDTO? data);
     }
 }
