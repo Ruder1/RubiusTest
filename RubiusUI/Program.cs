@@ -48,6 +48,7 @@ namespace RubiusUI
             builder.Services.AddTransient<IUserService, UserService>();
             builder.Services.AddTransient<IFilterService, FilterService>();
             builder.Services.AddTransient<IPaginationService, PaginationService>();
+            builder.Services.AddTransient<IReportService, ReportService>();
 
             builder.Services.AddTransient<IUnitOfWork, EFUnitOfWork>();
             builder.Services.AddTransient<IRepository<User>, UserRepository>();
@@ -61,8 +62,9 @@ namespace RubiusUI
             builder.Services.AddDbContext<UserContext>
             (options =>
                 {
+                    options.EnableSensitiveDataLogging();
                     options.UseNpgsql(connection, b => b.MigrationsAssembly("DataAccessLayer"));
-                    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                   
                 }
             );
 

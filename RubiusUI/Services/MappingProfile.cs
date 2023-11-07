@@ -23,6 +23,9 @@ namespace RubiusUI.Services
             CreateMap<DivisionDTO, Division>();
             CreateMap<DivisionDTO, DivisionViewModel>();
             CreateMap<DivisionViewModel, DivisionDTO>();
+
+            CreateMap<ReportDTO, ReportViewModel>();
+
         }
     }
 }

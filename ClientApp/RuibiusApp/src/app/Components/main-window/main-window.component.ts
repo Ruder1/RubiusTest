@@ -10,10 +10,11 @@ import {
   UserPage,
   FilterData,
 } from 'src/app/models/User.model';
-import { isEmpty, map, max } from 'rxjs';
+import { filter, isEmpty, map, max } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-main-window',
@@ -30,8 +31,10 @@ export class MainWindowComponent implements OnInit {
   divisions: IDivisions[] = [];
 
   //Переменные для фильтрации
-  selectedDivision: any;
+  selectedDivision:number[] = [];
   filtredData: FilterData = new FilterData();
+  minSalary:number = 0;
+  maxSalary:number;
 
   //TODO: Мои костыли для редактирования пользователя, желательно убрать
   editable: boolean = false;
@@ -46,40 +49,45 @@ export class MainWindowComponent implements OnInit {
 
   constructor(
     private dataService: DataService,
-    public modalService: ModalService
+    public modalService: ModalService,
+    private router:Router
   ) {}
 
+  currentRouter = this.router.url;
+
   ngOnInit() {
-    console.log('Init Main');
+    
     //Получение списка отделов с сервера
     this.dataService.getDivisions().subscribe((res) => {
       this.divisions = res;
     });
 
     //Получение списка пользователей с сервера
-    this.dataService
-      .getUsers(this.selectedPage, this.pageSize)
-      .subscribe((data: IUserPage) => {
-        this.userPage = data;
-        this.pages = data.pages;
-        this.users = this.userPage.users;
-        this.ChangeCountPages(data.pages.totalPages);
-      });
+    this.callGetUsers()
   }
 
   //Добаваление/Редактирование (получаем данные из модального окна)
   onAdd(item: any) {
-    console.log(item);
-    if (this.editable) {
-      this.users.splice(this.id, 1, item);
+
+    if (this.editable) 
+    {
       this.dataService
         .updateUser(item)
-        .subscribe((data: any) => console.log(data));
-    } else {
-      this.users.push(item);
+        .subscribe((data: any) => 
+        {
+          this.users.splice(this.id, 1, item);
+        });
+    } 
+    else 
+    {
+     
       this.dataService
         .createUser(item)
-        .subscribe((data: any) => console.log(data));
+        .subscribe((data: any) =>
+        { 
+          this.users.push(item);     
+          this.callGetUsers()    
+        });
     }
   }
 
@@ -96,8 +104,10 @@ export class MainWindowComponent implements OnInit {
     var check = tempArray.findIndex((data) => data == user);
     tempArray.splice(check, 1);
     this.users = tempArray.slice();
-
-    var temp = this.dataService.deleteUser(user.id).subscribe();
+    var temp = this.dataService.deleteUser(user.id).subscribe(()=>
+    {
+      this.callGetUsers()
+    });
   }
 
   //Флаг для Добавления элемента
@@ -120,33 +130,27 @@ export class MainWindowComponent implements OnInit {
 
   //Отфильтровать список пользователей
   filterResults(value: string) {
+    this.filtredData.minSalary = this.minSalary;
+    this.filtredData.maxSalary = this.maxSalary;
     this.filtredData.divisions = this.selectedDivision;
     this.filtredData.searchString = value;
-    console.log(this.filtredData);
-    this.dataService
-      .getFiltredUsers(this.filtredData, this.selectedPage, this.pageSize)
-      .subscribe({
-        next: (data: any) => {
-          this.userPage = data;
-          this.pages = data.pages;
-          this.users = data.users;
-          this.ChangeCountPages(this.pages.totalPages);
-        },
-        error: (error) => console.log(error),
-      });
+    this.callFilterService(1)
   }
 
   //Изменение размера отображаемых элементов на странице
   onPageChanged(pageIndex: number) {
-    console.log(this.selectedPage);
-    if (this.selectedPage == undefined) {
-      this.selectedPage = 1;
-    } else if (this.pages.totalPages >= pageIndex) {
-      this.pages.pageNumber;
-      this.selectedPage = pageIndex;
+
+    if (pageIndex > this.pages.totalPages)
+    {
+      pageIndex = this.pages.totalPages;
     }
+    else if (pageIndex <= 0)
+    {
+      pageIndex = 1
+    }
+
     this.dataService
-      .getFiltredUsers(this.filtredData, this.selectedPage, this.pageSize)
+      .getFiltredUsers(this.filtredData, pageIndex, this.pageSize)
       .subscribe({
         next: (data: any) => {
           this.userPage = data;
@@ -154,7 +158,6 @@ export class MainWindowComponent implements OnInit {
           this.users = data.users;
 
           this.ChangeCountPages(this.pages.totalPages);
-          this.CurrentPageChanged(this.pages.totalPages);
           this.selectedPage = data.pageNumber;
         },
         error: (error) => console.log(error),
@@ -162,17 +165,41 @@ export class MainWindowComponent implements OnInit {
   }
 
   //Переключение между страницами
-  CurrentPageChanged(pageIndex: number) {
-    if (this.pages.hasNextPage || this.pages.hasPreviousPage) {
-      this.selectedPage = pageIndex;
-    }
+  CurrentCountPageChanged() {
+    this.onPageChanged(1)
   }
 
   //Изменение количества отображаемых переключений страниц
   ChangeCountPages(pageCount: number) {
     this.countPages = [];
-    for (let index = 0; index < pageCount; index++) {
+    for (let index = 1; index <= pageCount; index++) {
       this.countPages.push(index);
     }
+  }
+
+  callGetUsers(){
+    this.dataService
+      .getUsers(this.selectedPage, this.pageSize)
+      .subscribe((data: IUserPage) => {
+        this.userPage = data;
+        this.pages = data.pages;
+        this.users = this.userPage.users;
+        this.ChangeCountPages(data.pages.totalPages);
+      });
+ }
+
+ callFilterService(index:number)
+  {
+    this.dataService
+      .getFiltredUsers(this.filtredData, 1, this.pageSize)
+      .subscribe({
+        next: (data: any) => {
+          this.userPage = data;
+          this.pages = data.pages;
+          this.users = data.users;
+          this.ChangeCountPages(this.pages.totalPages);
+        },
+        error: (error) => console.log(error),
+      });
   }
 }

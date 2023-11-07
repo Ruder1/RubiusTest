@@ -60,39 +60,37 @@
       [closeOnSelect]="false"
       [multiple]="true"
       [(ngModel)]="tempUser.divisions"
-      groupBy="subdivision"
-      name="selectedDivision"
     >
-      <ng-template
-        ng-optgroup-tmp
-        let-item="item"
-        let-item$="item$"
-        let-index="index"
-      >
-        <input
-          id="item-{{ index }}"
-          type="checkbox"
-          [ngModel]="item$.selected"
-          name="first"
-        />
-        {{ item.subdivision | uppercase }}
-      </ng-template>
       <ng-template
         ng-option-tmp
         let-item="item"
         let-item$="item$"
         let-index="index"
       >
+      <ng-template [ngIf]="item.parent == null" [ngIfElse]="child">
         <input
+          class="checkbox"
           id="item-{{ index }}"
           type="checkbox"
           [ngModel]="item$.selected"
-          name="second"          
         />
-        {{ item.name }}
+        {{ item.name | uppercase }}
       </ng-template>
+      <ng-template #child>
+        <div class="ms-2">
+          <input
+            class="checkbox"
+            id="item-{{ index }}"
+            type="checkbox"
+            [ngModel]="item$.selected"
+          />
+          {{ item.name }}
+        </div>
+      </ng-template>
+    </ng-template>
     </ng-select>
   </div>
+  
   <div class="Row mx-auto p-2">
     <button type="button" class="btn btn-primary btn-outline-dark"
     (click)="Add()"

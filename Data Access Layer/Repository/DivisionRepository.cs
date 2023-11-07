@@ -41,7 +41,8 @@ namespace DataAccessLayer.Repository
 
         public IEnumerable<Division> GetAll()
         {
-            return _context.Divisions.ToList();
+            IQueryable<Division> divisions = _context.Divisions.OrderBy(d=>d.Id);
+            return divisions;
         }
 
         public void Update(Division item)

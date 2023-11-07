@@ -63,7 +63,7 @@ namespace RubiusUI.Areas.Controllers
 
             _userService.CreateUser(userDto);
 
-            return Ok("Пользователь Успешно добавлен");
+            return Ok();
 
         }
 
@@ -72,7 +72,7 @@ namespace RubiusUI.Areas.Controllers
         {
             var userDto = _mapper.Map<UserViewModel, UserDTO>(user);
             _userService.UpdateUser(userDto);
-            return Ok("Пользователь отредактирован");
+            return Ok();
         }
 
         [HttpDelete("{id:int}")]
@@ -80,7 +80,7 @@ namespace RubiusUI.Areas.Controllers
         {
             _userService.DeleteUser(id);
 
-            return Ok("Пользователь удален");
+            return Ok();
         }
 
         [HttpPost]

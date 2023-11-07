@@ -14,8 +14,7 @@ export class ReportComponent implements OnInit {
   report:IReport[] = []
   filtredData: FilterData = new FilterData();
 
-  constructor(private reportService: ReportService,
-    private dataService:DataService) {}
+  constructor(private reportService: ReportService) {}
 
   ngOnInit(): void {
     this.reportService.getReport().subscribe((result)=>
@@ -26,10 +25,12 @@ export class ReportComponent implements OnInit {
   }
 
   filterResults() {
+    console.log(this.filtredData)
     this.reportService
-      .getFiltredReport(new FilterReport())
+      .getFiltredReport(this.filtredData)
       .subscribe({
         next: (data: any) => {
+          this.report = data;
         },
         error: (error) => console.log(error),
       });

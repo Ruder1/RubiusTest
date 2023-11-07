@@ -26,12 +26,13 @@ namespace DataAccessLayer.Repository
                 .OrderBy(s=>s.Surname)
                 .ThenBy(n=>n.Name)
                 .ThenBy(l=>l.LastName)
+                .AsNoTracking()
                 .ToList();
         }
 
         public User Get(int id)
         {
-            return _context.Users.Include(d => d.Divisions)
+            return _context.Users.Include(d => d.Divisions).AsNoTracking()
                 .FirstOrDefault(u => u.Id == id);
         }
 
@@ -53,13 +54,25 @@ namespace DataAccessLayer.Repository
         }
 
         public void Update(User user)
-        {        
+        {
             var temp = _context.Enrollments.Where(d => d.UserId == user.Id).ToList();
             foreach (var item in temp)
             {
                 _context.Remove(item);
             }
-            _context.SaveChanges();
+
+            var division = new List<Division>();
+
+            foreach (var item in user.Divisions)
+            {
+                division.Add(_context.Divisions.FirstOrDefault(d => d.Id == item.Id));
+
+            }
+
+            user.Divisions.Clear();
+
+            _context.Divisions.AttachRange(division);
+            user.Divisions.AddRange(division);
             _context.Update(user);
         }
 

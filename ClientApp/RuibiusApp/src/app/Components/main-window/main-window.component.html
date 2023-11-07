@@ -27,38 +27,38 @@
       [items]="divisions"
       [multiple]="true"
       bindLabel="name"
-      bindValue="id"
       [selectableGroup]="false"
       [selectableGroupAsModel]="true"
       [closeOnSelect]="false"
+      bindValue="id"
       [(ngModel)]="selectedDivision"
     >
-      <ng-template
-        ng-optgroup-tmp
-        let-item="item"
-        let-item$="item$"
-        let-index="index"
-      >
-        <input
-          id="item-{{ index }}"
-          type="checkbox"
-          [ngModel]="item$.selected"
-        />
-        {{ item.name | uppercase }}
-      </ng-template>
-
       <ng-template
         ng-option-tmp
         let-item="item"
         let-item$="item$"
         let-index="index"
       >
-        <input
-          id="item-{{ index }}"
-          type="checkbox"
-          [ngModel]="item$.selected"
-        />
-        {{ item.name }}
+        <ng-template [ngIf]="item.parent == null" [ngIfElse]="child">
+          <input
+            class="checkbox"
+            id="item-{{ index }}"
+            type="checkbox"
+            [ngModel]="item$.selected"
+          />
+          {{ item.name | uppercase }}
+        </ng-template>
+        <ng-template #child>
+          <div class="ms-2">
+            <input
+              class="checkbox"
+              id="item-{{ index }}"
+              type="checkbox"
+              [ngModel]="item$.selected"
+            />
+            {{ item.name }}
+          </div>
+        </ng-template>
       </ng-template>
     </ng-select>
 
@@ -68,13 +68,13 @@
       type="number"
       class="MinMaxValue"
       placeholder="0"
-      [(ngModel)]="filtredData.minSalary"
+      [(ngModel)]="minSalary"
     />
     <input
       type="number"
       class="MinMaxValue"
       placeholder="0"
-      [(ngModel)]="filtredData.maxSalary"
+      [(ngModel)]="maxSalary"
     />
 
     <div>
@@ -148,8 +148,8 @@
             </a>
           </li>
           <li class="page-item" *ngFor="let page of countPages" [value]="page">
-            <a class="page-link" href="#" (click)="onPageChanged(page + 1)">
-              {{ page + 1 }}
+            <a class="page-link" href="#" (click)="onPageChanged(page)">
+              {{ page }}
             </a>
           </li>
           <li class="page-item">
@@ -167,7 +167,7 @@
         <ng-select
           class="SelectedPage"
           [(ngModel)]="pageSize"
-          (change)="onPageChanged(pages.pageNumber)"
+          (change)="CurrentCountPageChanged()"
         >
           <ng-option *ngFor="let page of pagesSize" [value]="page.id"
             >{{ page.id }}
