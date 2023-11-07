@@ -19,8 +19,6 @@ export class ReportService {
 
   getFiltredReport(filtredData:FilterReport)
   {
-    const params = new HttpParams()
-    .set('page',1);
-    return this.http.post(this.url + 'FiltredUsers', filtredData, {params});     
+    return this.http.post(this.url + 'FilterAverageSalary', filtredData);     
   }
 }

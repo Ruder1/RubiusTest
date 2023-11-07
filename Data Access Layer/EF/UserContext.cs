@@ -27,8 +27,8 @@ namespace DataAccessLayer.EF
                 new Division { Id = 1, Name = "Финансовый" },
                 new Division { Id = 2, Name = "Логистики", ParentId = 1 },
                 new Division { Id = 3, Name = "Закупок", ParentId = 1 },
-                new Division { Id = 4, Name = "Развлечений" },
-                new Division { Id = 5, Name = "Кадров", ParentId = 1 }
+                new Division { Id = 4, Name = "Кадров", ParentId = 1 },
+                new Division { Id = 5, Name = "Развлечений" },
             };
 
             var listUser = new List<User>()

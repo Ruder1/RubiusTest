@@ -64,7 +64,7 @@ namespace BuisnessLogicLayer.Services
 
         public IEnumerable<DivisionDTO> GetDivisions()
         {
-            var temp = Database.Divisions.GetAll();
+            var temp = Database.Divisions.GetAll().ToList();
 
             var result = _mapper.Map<IEnumerable<Division>, IEnumerable<DivisionDTO> >(temp);
 

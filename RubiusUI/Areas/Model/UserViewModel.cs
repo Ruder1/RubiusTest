@@ -4,7 +4,7 @@ namespace RubiusUI.Areas.Model
 {
     public class UserViewModel
     {
-        public int Id { get; init; }
+        public int? Id { get; init; }
         public string Surname { get; init; }
         public string Name { get; init; }
         public string LastName { get; init; }

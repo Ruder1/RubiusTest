@@ -23,8 +23,8 @@ export class ModalComponent implements OnInit{
     this.dataService.getDivisions()
     .subscribe((res)=>{
     this.division = res;
-  })
-    //TODO: Исправить копирование элементов (По значение, а не по ссылке)
+    })
+
     this.tempUser.id = this.user.id;
     this.tempUser.surname = this.user.surname;
     this.tempUser.name = this.user.name;
@@ -39,11 +39,5 @@ export class ModalComponent implements OnInit{
     this.user = this.tempUser
     this.userChange.emit(this.user)
     
-  }
-
-  ChooseDivision(item:any)
-  {
-    console.log(item)
-    this.user.divisions.push(item)
   }
 }
