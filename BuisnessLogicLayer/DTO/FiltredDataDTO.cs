@@ -14,6 +14,6 @@ namespace BuisnessLogicLayer.DTO
 
         public string? SearchString { get; set; }
 
-        public DivisionDTO? Division { get; set; }
+        public List<int>? Divisions { get; set; }
     }
 }

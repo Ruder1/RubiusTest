@@ -6,7 +6,7 @@
     <input
       class="CustomInput form-control ms-4"
       type="text"
-      [(ngModel)]="tempUser.Surname"
+      [(ngModel)]="tempUser.surname"
       placeholder="Фамилия"
     />
   </div>
@@ -16,7 +16,7 @@
       class="CustomInput form-control ms-4"
       type="text"
       name="Name"
-      [(ngModel)]="tempUser.Name"
+      [(ngModel)]="tempUser.name"
       placeholder="Имя"
     />
   </div>
@@ -25,7 +25,7 @@
     <input
       class="CustomInput form-control ms-4"
       name="LastName"
-      [(ngModel)]="tempUser.LastName"
+      [(ngModel)]="tempUser.lastName"
       type="text"
       placeholder="Отчество"
     />
@@ -36,7 +36,7 @@
       class="CustomInput form-control ms-4"
       type="email"
       name="Email"
-      [(ngModel)]="tempUser.Email"
+      [(ngModel)]="tempUser.email"
       placeholder="example@mail.com"
     />
   </div>
@@ -46,7 +46,7 @@
       class="CustomInput form-control ms-4"
       type="number"
       name="Salary"
-      [(ngModel)]="tempUser.Salary"
+      [(ngModel)]="tempUser.salary"
       placeholder="0"
     />
   </div>
@@ -59,7 +59,7 @@
       [selectableGroup]="true"
       [closeOnSelect]="false"
       [multiple]="true"
-      [(ngModel)]="tempUser.Divisions"
+      [(ngModel)]="tempUser.divisions"
       groupBy="subdivision"
       name="selectedDivision"
     >

@@ -7,21 +7,30 @@ import {FormsModule,ReactiveFormsModule} from '@angular/forms';
 import { ModalComponent } from './Components/modal/modal.component';
 import { MainWindowComponent } from './Components/main-window/main-window.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-// import { TableModule } from './Components/table/table.module';
-import { TableComponent } from './Components/table/table.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
+import { HttpClientModule } from '@angular/common/http';
+import { ReportComponent } from './Components/report/report.component';
+import { Route, RouterModule, Routes } from '@angular/router';
+
+const appRoutes: Routes =
+[
+  { path: '', component: MainWindowComponent },
+  { path: 'report', component: ReportComponent }
+];
 
 @NgModule({
   declarations: [
     AppComponent,
     ModalComponent,
-    MainWindowComponent,TableComponent
+    MainWindowComponent,
+    ReportComponent
   ],
+  
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -29,7 +38,13 @@ import { MatInputModule } from '@angular/material/input';
     ReactiveFormsModule,
     FormsModule,
     BrowserAnimationsModule,
-    MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule,
+    MatFormFieldModule,
+    MatInputModule, 
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
+    HttpClientModule,
+    RouterModule.forRoot(appRoutes)
     ],
   providers: [],
   bootstrap: [AppComponent]

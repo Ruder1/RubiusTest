@@ -1,15 +1,24 @@
 <header>
-    <h1>RuibiusApp</h1>
-        <nav>
-            
-        </nav>
-  </header>  
+  <div>
+    <h1 class="mt-2 mb-2">RuibiusApp</h1>
+  </div>
+  <nav class="navbar " data-bs-theme="dark">
+    <ul class="nav nav-tabs justify-content-end">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="">Главная</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " routerLink="/report">Отчет</a>
+      </li>
+    </ul>
+    
+    
+  </nav>
+</header>  
   <main>      
-    <app-main-window 
-    class="TempTemplate"
-    >
-    </app-main-window>    
-
+    <div class="TempTemplate">
+      <router-outlet></router-outlet>
+    </div>
   </main>
   
   <footer>

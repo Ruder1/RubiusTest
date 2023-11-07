@@ -28,11 +28,19 @@ namespace BuisnessLogicLayer.Services
         {
             IEnumerable<User> users = Database.Users.GetAll();
 
-            if (data.Division != null)
+            if (data.Divisions.Count > 0)
             {
-                var division = Database.Divisions.Get(data.Division.Id);
+                //var divisions = new List<Division>();
+                List<User> temp = new List<User>();
+                foreach (var item in data.Divisions)
+                {
+                    var index = Database.Divisions.Get(item);
 
-                users = users.Where(d => d.Divisions.Contains(division));
+                    temp.AddRange(
+                        users.Where(d => d.Divisions.Any(y => y.Id == item)));
+
+                }
+                users = temp.Distinct();
             }
 
             if (data.MinSalary != null && data.MaxSalary != null)
@@ -46,7 +54,7 @@ namespace BuisnessLogicLayer.Services
                 || p.Surname.Contains(data.SearchString)
                 || p.LastName.Contains(data.SearchString)
                 || p.Email.Contains(data.SearchString));
-            }            
+            }
 
             var userResult = _mapper.Map<List<User>, List<UserDTO>>(users.ToList());
 

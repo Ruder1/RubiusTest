@@ -62,7 +62,7 @@ namespace BuisnessLogicLayer.Services
             Database.Save();
         }
 
-        public IEnumerable<DivisionDTO> GetDivision()
+        public IEnumerable<DivisionDTO> GetDivisions()
         {
             var temp = Database.Divisions.GetAll();
 

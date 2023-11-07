@@ -2,29 +2,67 @@
 export class User implements IUser
 {
     id: number;
-    Surname:string;
-    Name:string;
-    LastName:string;
-    Email:string;
-    Salary:number;
-    Divisions:Divisions[];
+    surname:string;
+    name:string;
+    lastName:string;
+    email:string;
+    salary:number;
+    divisions:IDivisions[];
+}
+
+export class UserPage implements IUserPage
+{
+  users: User[];
+  pages: Page;
+}
+
+export class Page implements IPage
+{
+  totalPages: number;
+  pageNumber: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
 }
 
 
-export interface Divisions
+export class FilterData
+{
+  minSalary:number;
+  maxSalary:number;
+  searchString:string;
+  divisions:any[];
+}
+
+
+export interface IDivisions
 {
   id:number;
-  subdivision:string;
   name:string;
+  parent:IDivisions;
+  children:IDivisions[];
 }
 
 export interface IUser
 {
   id:number;
-  Surname:string;
-  Name:string;
-  LastName:string;
-  Email:string;
-  Salary:number;
-  Divisions:Divisions[];
+  surname:string;
+  name:string;
+  lastName:string;
+  email:string;
+  salary:number;
+  divisions:IDivisions[];
+}
+
+export interface IUserPage
+{
+  users:IUser[];
+  pages:IPage;
+}
+
+export interface IPage
+{
+  pageNumber:number;
+  totalPages:number;
+  hasPreviousPage:boolean;
+  hasNextPage:boolean;
 }
