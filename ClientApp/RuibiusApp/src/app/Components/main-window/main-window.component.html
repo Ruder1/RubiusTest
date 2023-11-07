@@ -1,0 +1,189 @@
+<div class="MainContent">
+  <div class="CreateUserElement">
+    <button
+      class="CreateUser btn opacity-100 btn-outline-second"
+      (click)="onItemSelect()"
+      (click)="modalService.open()"
+    >
+      Создать нового пользователя
+    </button>
+  </div>
+  <div class="SearchUserElement">
+    <form>
+      <input
+        type="text"
+        name="text"
+        class="Search form-control"
+        placeholder="Поиск"
+        #filter
+      />
+    </form>
+  </div>
+
+  <div class="InfoContainer">
+    <div class="InfoElement">Отделы</div>
+    <ng-select
+      class="custom"
+      [items]="divisions"
+      [multiple]="true"
+      bindLabel="name"
+      [selectableGroup]="false"
+      [selectableGroupAsModel]="true"
+      [closeOnSelect]="false"
+      bindValue="id"
+      [(ngModel)]="selectedDivision"
+    >
+      <ng-template
+        ng-option-tmp
+        let-item="item"
+        let-item$="item$"
+        let-index="index"
+      >
+        <ng-template [ngIf]="item.parent == null" [ngIfElse]="child">
+          <input
+            class="checkbox"
+            id="item-{{ index }}"
+            type="checkbox"
+            [ngModel]="item$.selected"
+          />
+          {{ item.name | uppercase }}
+        </ng-template>
+        <ng-template #child>
+          <div class="ms-2">
+            <input
+              class="checkbox"
+              id="item-{{ index }}"
+              type="checkbox"
+              [ngModel]="item$.selected"
+            />
+            {{ item.name }}
+          </div>
+        </ng-template>
+      </ng-template>
+    </ng-select>
+
+    <div class="InfoElement">Оклад мин / макс</div>
+
+    <input
+      type="number"
+      class="MinMaxValue"
+      placeholder="0"
+      [(ngModel)]="minSalary"
+    />
+    <input
+      type="number"
+      class="MinMaxValue"
+      placeholder="0"
+      [(ngModel)]="maxSalary"
+    />
+
+    <div>
+      <button
+        type="button"
+        class="FilterButton btn btn-primary btn-outline-second"
+        (click)="filterResults(filter.value)"
+      >
+        Фильтр
+      </button>
+    </div>
+  </div>
+  <div>
+    <div>
+      <table class="MainTable table table-striped table-bordered">
+        <thead class="table-success">
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">ФИО</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Оклад</th>
+            <th scope="col">Кол-во отделов</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users; let i = index">
+            <th scope="row">{{ i + 1 }}</th>
+            <td>
+              {{ makeFio(user) }}
+            </td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.salary | number }}</td>
+            <td>{{ user.divisions.length }}</td>
+            <th scope="row" class="EditTableMenu">
+              <div>
+                <input
+                  class="m-1 flex-none"
+                  type="image"
+                  src="assets\images\pencil-square.svg"
+                  name="edit"
+                  (click)="EditItem(i, user)"
+                  (click)="modalService.open()"
+                />
+              </div>
+
+              <div>
+                <input
+                  class="m-1 flex-none"
+                  type="image"
+                  src="assets\images\trash.svg"
+                  name="delete"
+                  (click)="DeleteItem(user)"
+                />
+              </div>
+            </th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="UnderTableNavigation">
+      <nav aria-label="Page navigation">
+        <ul class="pagination ElementsNavigation">
+          <li class="page-item">
+            <a
+              class="page-link"
+              href="#"
+              (click)="onPageChanged(pages.pageNumber - 1)"
+            >
+              Previous
+            </a>
+          </li>
+          <li class="page-item" *ngFor="let page of countPages" [value]="page">
+            <a class="page-link" href="#" (click)="onPageChanged(page)">
+              {{ page }}
+            </a>
+          </li>
+          <li class="page-item">
+            <a
+              class="page-link"
+              href="#"
+              (click)="onPageChanged(pages.pageNumber + 1)"
+            >
+              Next
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div class="ElementsNavigation">
+        <ng-select
+          class="SelectedPage"
+          [(ngModel)]="pageSize"
+          (change)="CurrentCountPageChanged()"
+        >
+          <ng-option *ngFor="let page of pagesSize" [value]="page.id"
+            >{{ page.id }}
+          </ng-option>
+        </ng-select>
+      </div>
+      <div class="ElementsNavigation">
+        <span class="mt-4">Количество записей на странице</span>
+      </div>
+    </div>
+    <app-modal
+      [(user)]="currentUser"
+      (userChange)="onAdd($event)"
+      *ngIf="modalService.isVisible$ | async"
+      title="Create new User"
+    >
+    </app-modal>
+  </div>
+</div>

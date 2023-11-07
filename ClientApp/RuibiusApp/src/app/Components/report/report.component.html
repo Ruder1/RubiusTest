@@ -1,0 +1,33 @@
+<div class="ReportContent">
+  <div class="InfoElement">
+    Оклад мин / макс
+    <input type="number" class="MinMaxValue m-2" placeholder="0" [(ngModel)]="filtredData.minSalary" />
+    <input type="number" class="MinMaxValue m-2" placeholder="0" [(ngModel)]="filtredData.maxSalary" />
+
+    <button
+      type="button"
+      class="FilterButton btn btn-primary btn-outline-second m-2"
+      (click)="filterResults()"
+    >
+      Фильтр
+    </button>
+  </div>
+  <div>
+    <table class="MainTable table table-striped table-bordered">
+      <thead class="table-success">
+        <tr>
+          <th scope="col">Название отдела</th>
+          <th scope="col">Средний оклад</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of report; let i = index">
+          <td scope="row">{{ item.division }}</td>
+          <td>
+            {{ item.averageSalary }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,61 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+body{
+    min-width: auto;
+    min-height: auto;
+    display: flex;
+    flex-direction: column;    
+    justify-content: space-between;
+} 
+
+.appRoot {                
+    min-width: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;    
+    /* justify-content: space-between; */
+}
+
+.ng-select.custom {
+    border:20px;
+    min-height: 10px;
+    border-radius: 10px;
+    padding: 4px;
+}
+
+.ng-select.custom .ng-select-container  {            
+    min-height: 10px;
+    max-height: 60px;    
+    min-width: 300px;
+    max-width: 350px;
+    border-radius: 5px;
+    background-color: #f0f2f2;
+}
+
+.ng-value-label
+{
+    background-color: white;
+}
+
+.ng-select .ng-clear-wrapper
+{
+    display: none;   
+}
+
+.ng-select.ModalSelect {
+    border:20px;
+    border-radius: 10px;
+    padding: 4px;
+    width: 100%;  
+    min-width: 150px;
+    max-width: 450px;
+}
+.ng-select.ModalSelect .ng-select-container  {         
+    min-width: 150px;
+    max-width: 400px;
+    border-radius: 5px;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
