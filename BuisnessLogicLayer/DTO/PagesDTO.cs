@@ -9,8 +9,15 @@
 
         public PagesDTO(int count, int pageNumber, int pageSize)
         {
-            PageNumber = pageNumber;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+            if(pageNumber > TotalPages) 
+            {
+                PageNumber = 1;
+            }
+            else
+            {
+                PageNumber = pageNumber;
+            }
         }
     }
 }

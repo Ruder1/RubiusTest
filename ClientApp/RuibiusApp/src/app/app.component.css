@@ -21,9 +21,10 @@ header
 {
     width: var(--s-full);
     max-width: 100%;
-    height: 4rem;
+    /* height: 4rem; */
     top: 0;
     display: flex;
+    flex-direction: column;
     margin: 0px;
     align-items: center;
     justify-content: center;
@@ -46,4 +47,10 @@ footer
     flex-basis: 4rem;
     flex-shrink:3;
 
+}
+
+.nav-link
+{
+    color: black;
+    font-size: large;
 }

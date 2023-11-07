@@ -39,7 +39,6 @@ namespace DataAccessLayer.Repository
         {
             var division = new List<Division>();
 
-
             foreach (var item in user.Divisions)
             {
                 division.Add(_context.Divisions.FirstOrDefault(d => d.Id == item.Id));
@@ -54,7 +53,7 @@ namespace DataAccessLayer.Repository
         }
 
         public void Update(User user)
-        {
+        {        
             var temp = _context.Enrollments.Where(d => d.UserId == user.Id).ToList();
             foreach (var item in temp)
             {

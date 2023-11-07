@@ -20,7 +20,7 @@ namespace BuisnessLogicLayer.Interfaces
 
         public void DeleteUser(int id);
 
-        public IEnumerable<DivisionDTO> GetDivision();
+        public IEnumerable<DivisionDTO> GetDivisions();
 
     }
 }

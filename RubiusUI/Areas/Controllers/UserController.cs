@@ -75,7 +75,7 @@ namespace RubiusUI.Areas.Controllers
             return Ok("Пользователь отредактирован");
         }
 
-        [HttpDelete]
+        [HttpDelete("{id:int}")]
         public IActionResult DeleteUser(int id)
         {
             _userService.DeleteUser(id);
@@ -84,7 +84,7 @@ namespace RubiusUI.Areas.Controllers
         }
 
         [HttpPost]
-        public IActionResult FiltredUsers(FilteredDataViewModel filtredData, int page, int pageSize)
+        public IActionResult FiltredUsers(FilteredDataViewModel filtredData, int page = 1, int pageSize = 5)
         {
             if (filtredData == null)
             {
@@ -103,9 +103,12 @@ namespace RubiusUI.Areas.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetDivision()
+        public IActionResult GetDivisions()
         {
-            var result = _userService.GetDivision();
+            var divisions = _userService.GetDivisions();
+
+            var result = _mapper.Map<IEnumerable<DivisionDTO>, IEnumerable<DivisionViewModel>>(divisions);
+
             return Ok(result);
         }
     }

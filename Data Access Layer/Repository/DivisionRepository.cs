@@ -41,7 +41,7 @@ namespace DataAccessLayer.Repository
 
         public IEnumerable<Division> GetAll()
         {
-            return _context.Divisions;
+            return _context.Divisions.ToList();
         }
 
         public void Update(Division item)

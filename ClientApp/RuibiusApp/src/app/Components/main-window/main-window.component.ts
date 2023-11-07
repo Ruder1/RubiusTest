@@ -1,8 +1,16 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { DataService } from '../../Services/data.service';
 import { ModalService } from 'src/app/Services/modal.service';
-import { Divisions, IUser, User } from 'src/app/models/User.model';
-import { isEmpty, max } from 'rxjs';
+import {
+  IDivisions,
+  IPage,
+  IUser,
+  IUserPage,
+  User,
+  UserPage,
+  FilterData,
+} from 'src/app/models/User.model';
+import { isEmpty, map, max } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -11,29 +19,30 @@ import { MatTableDataSource } from '@angular/material/table';
   selector: 'app-main-window',
   templateUrl: './main-window.component.html',
   styleUrls: ['./main-window.component.css'],
+  providers: [DataService, ModalService]
 })
-export class MainWindowComponent implements OnInit, AfterViewInit {
+export class MainWindowComponent implements OnInit {
   title = 'RuibiusApp';
 
-  displayedColumns: string[] = ['id', 'fio', 'email', 'salary','control'];
-  dataSource: MatTableDataSource<IUser>;
-  
-  @ViewChild('paginator') paginator:MatPaginator
-  @ViewChild(MatSort) sort: MatSort;
-
-  currentUser: User = new User();
+  userPage: IUserPage = new UserPage();
   users: IUser[] = [];
-  selectedDivision: number[] = [];
-  division: Divisions[] = [];
+  pages: IPage;
+  divisions: IDivisions[] = [];
 
   //Переменные для фильтрации
-  filteredUserList: IUser[] = [];
-  minSalary: number = 0;
-  maxSalary: number;
+  selectedDivision: any;
+  filtredData: FilterData = new FilterData();
 
-  //TODO: Мои костыли, желательно убрать
+  //TODO: Мои костыли для редактирования пользователя, желательно убрать
   editable: boolean = false;
   id: number = 0;
+  currentUser: User = new User();
+
+  //Переменные для пагинации
+  selectedPage: number = 1;
+  pageSize: number = 5;
+  countPages: number[] = [];
+  pagesSize = [{ id: 5 }, { id: 10 }, { id: 15 }, { id: 20 }];
 
   constructor(
     private dataService: DataService,
@@ -41,97 +50,129 @@ export class MainWindowComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
+    console.log('Init Main');
+    //Получение списка отделов с сервера
     this.dataService.getDivisions().subscribe((res) => {
-      this.division = res;
+      this.divisions = res;
     });
+
+    //Получение списка пользователей с сервера
+    this.dataService
+      .getUsers(this.selectedPage, this.pageSize)
+      .subscribe((data: IUserPage) => {
+        this.userPage = data;
+        this.pages = data.pages;
+        this.users = this.userPage.users;
+        this.ChangeCountPages(data.pages.totalPages);
+      });
   }
 
-  ngAfterViewInit() {
-    this.dataService.getUsers().subscribe((res)=>
-    {
-      this.users = res
-      this.filteredUserList = this.users;
-      this.dataSource = new MatTableDataSource(res);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-      
-    });
-  }
-
+  //Добаваление/Редактирование (получаем данные из модального окна)
   onAdd(item: any) {
+    console.log(item);
     if (this.editable) {
       this.users.splice(this.id, 1, item);
+      this.dataService
+        .updateUser(item)
+        .subscribe((data: any) => console.log(data));
     } else {
       this.users.push(item);
+      this.dataService
+        .createUser(item)
+        .subscribe((data: any) => console.log(data));
     }
-    this.dataSource.data = this.users
   }
 
+  //Флаг для Редактирования элемента
   EditItem(id: number, user: User) {
     this.id = id;
     this.currentUser = user;
     this.editable = true;
   }
 
-  DeleteItem(id: number, user: User) {
-    var tempArray = this.dataSource.data.slice();
-    var check = tempArray.findIndex(data=>data == user)
-    tempArray.splice(check,1)
-    this.dataSource.data = tempArray.slice()
+  //Удаление элемента
+  DeleteItem(user: User) {
+    var tempArray = this.users.slice();
+    var check = tempArray.findIndex((data) => data == user);
+    tempArray.splice(check, 1);
+    this.users = tempArray.slice();
+
+    var temp = this.dataService.deleteUser(user.id).subscribe();
   }
 
+  //Флаг для Добавления элемента
   onItemSelect() {
     this.editable = false;
     this.currentUser = new User();
   }
 
+  //Вывести фамилию с инициалами
   makeFio(user: User): string {
     var fio =
-      user.Surname +
+      user.surname +
       ' ' +
-      user.Name.substring(0, 1).toUpperCase() +
+      user.name.substring(0, 1).toUpperCase() +
       '.' +
-      user.LastName.substring(0, 1).toUpperCase() +
+      user.lastName.substring(0, 1).toUpperCase() +
       '.';
     return fio;
   }
 
-  filterResults(text: string) {
-    if (!text) {
-      this.filteredUserList = this.users;
-    }
-    
-    //Использование фильтра
-    this.filteredUserList = this.users
-    .filter((users) => {
-      return (
-        //Проверка на поиск
-        users?.Surname.toLowerCase().includes(text.toLowerCase()) ||
-        users?.Name.toLowerCase().includes(text.toLowerCase()) ||
-        users?.LastName.toLowerCase().includes(text.toLowerCase()) ||
-        users?.Email.toLowerCase().includes(text.toLowerCase())
-      );
-    })
-      .filter((users) => {
-        //Проверка на Оклад
-        if (this.maxSalary != undefined) {
-          return (
-            this.minSalary <= users.Salary && users.Salary <= this.maxSalary
-          );
-        } else {
-          return this.minSalary <= users.Salary;
-        }
+  //Отфильтровать список пользователей
+  filterResults(value: string) {
+    this.filtredData.divisions = this.selectedDivision;
+    this.filtredData.searchString = value;
+    console.log(this.filtredData);
+    this.dataService
+      .getFiltredUsers(this.filtredData, this.selectedPage, this.pageSize)
+      .subscribe({
+        next: (data: any) => {
+          this.userPage = data;
+          this.pages = data.pages;
+          this.users = data.users;
+          this.ChangeCountPages(this.pages.totalPages);
+        },
+        error: (error) => console.log(error),
       });
-      this.dataSource.data = this.filteredUserList;
-  }  
+  }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  //Изменение размера отображаемых элементов на странице
+  onPageChanged(pageIndex: number) {
+    console.log(this.selectedPage);
+    if (this.selectedPage == undefined) {
+      this.selectedPage = 1;
+    } else if (this.pages.totalPages >= pageIndex) {
+      this.pages.pageNumber;
+      this.selectedPage = pageIndex;
+    }
+    this.dataService
+      .getFiltredUsers(this.filtredData, this.selectedPage, this.pageSize)
+      .subscribe({
+        next: (data: any) => {
+          this.userPage = data;
+          this.pages = data.pages;
+          this.users = data.users;
 
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+          this.ChangeCountPages(this.pages.totalPages);
+          this.CurrentPageChanged(this.pages.totalPages);
+          this.selectedPage = data.pageNumber;
+        },
+        error: (error) => console.log(error),
+      });
+  }
+
+  //Переключение между страницами
+  CurrentPageChanged(pageIndex: number) {
+    if (this.pages.hasNextPage || this.pages.hasPreviousPage) {
+      this.selectedPage = pageIndex;
     }
   }
 
+  //Изменение количества отображаемых переключений страниц
+  ChangeCountPages(pageCount: number) {
+    this.countPages = [];
+    for (let index = 0; index < pageCount; index++) {
+      this.countPages.push(index);
+    }
+  }
 }
